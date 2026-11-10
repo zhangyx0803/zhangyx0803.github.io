@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import mapSvg from '../assets/map-scene.svg?raw';
-import { log, plan } from '../data/log';
+import { tracks } from '../data/log';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const notes = (await getCollection('notes'))
@@ -15,8 +15,6 @@ const awards = (await getCollection('achievements'))
 
 const fmt = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-
-const days = log.slice().reverse();
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -185,36 +183,46 @@ const jsonLd = {
     <div class="wrap">
       <div class="section-head">
         <h2 class="mask"><span>逐日进度。</span></h2>
-        <p data-reveal>每天做了什么、现在到哪一步、下一步是什么。日期取自文件与提交记录。</p>
+        <p data-reveal>一个项目一条轨，横向排。日期取自文件与提交记录；进行中的写在最右，后续接在下面。</p>
       </div>
 
-      <div class="days">
-        {days.map((e, i) => (
-          <div class="day" data-reveal style={`--d:${(i % 4) * 40}ms`}>
-            <time class="d-date" datetime={e.date}>{e.date.replace(/-/g, '.')}</time>
-            <div class="d-body">
-              <div class="d-head">
-                <h3>{e.title}</h3>
-                <span class={e.status === '完成' ? 'st is-done' : 'st is-doing'}>{e.status}</span>
+      {tracks.map((t, ti) => (
+        <div class="track" data-reveal style={`--d:${ti * 60}ms`}>
+          <div class="track-head">
+            <h3>{t.title}</h3>
+            <span class="track-meta">{t.entries.length} 条 · {t.status}</span>
+            {t.entries.length > 4 && <span class="track-hint">横向滚动 →</span>}
+          </div>
+
+          <div class="rail">
+            {t.entries.map((e) => (
+              <div class="node">
+                <time class="n-date" datetime={e.date}>{e.date.replace(/-/g, '.')}</time>
+                <div class="n-line">
+                  <span class={e.status === '完成' ? 'dot' : 'dot is-doing'}></span>
+                </div>
+                <div class="n-body">
+                  <h4>{e.title}</h4>
+                  <ul>{e.done.map((d) => <li>{d}</li>)}</ul>
+                  {e.next && <p class="n-next">下一步：{e.next}</p>}
+                </div>
               </div>
-              <ul class="d-done">
-                {e.done.map((d) => <li>{d}</li>)}
-              </ul>
-              {e.next && <p class="d-next">下一步：{e.next}</p>}
-            </div>
+            ))}
+            <span class="rail-fill" aria-hidden="true"></span>
           </div>
-        ))}
-      </div>
 
-      <div class="plan" data-reveal>
-        <h3>后续安排</h3>
-        {plan.map((p) => (
-          <div class="plan-row">
-            <span class="p-when">{p.when}</span>
-            <span>{p.what}</span>
-          </div>
-        ))}
-      </div>
+          {t.plan.length > 0 && (
+            <div class="plan">
+              <span class="plan-label">后续</span>
+              <div class="plan-items">
+                {t.plan.map((p) => (
+                  <span class="plan-item"><b>{p.when}</b>{p.what}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   </section>
 
@@ -322,52 +330,77 @@ const jsonLd = {
     .award .links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
     @media (max-width: 720px) { .award { grid-template-columns: 1fr; gap: 6px; } .award .kind { padding-top: 0; } }
 
-    /* daily log */
-    .days { border-top: 1px solid var(--rule); }
-    .day {
-      display: grid; grid-template-columns: 132px 1fr; gap: 28px;
-      padding: 18px 0; border-bottom: 1px solid var(--rule-soft);
+    /* per-project rails */
+    .track { margin-bottom: 52px; }
+    .track:last-child { margin-bottom: 0; }
+    .track-head {
+      display: flex; align-items: baseline; gap: 14px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule);
     }
-    .d-date {
-      font-family: var(--mono); font-size: 12px; color: var(--muted);
-      letter-spacing: .03em; padding-top: 4px; font-variant-numeric: tabular-nums;
+    .track-head h3 { margin: 0; font-size: 20px; letter-spacing: -0.012em; }
+    .track-meta {
+      font-family: var(--mono); font-size: 11.5px; color: var(--muted); letter-spacing: .04em;
     }
-    .d-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-    .d-head h3 { margin: 0; font-size: 18px; letter-spacing: -0.01em; }
-    .st {
-      font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
-      padding: 2px 6px; border: 1px solid var(--rule); border-radius: 2px;
-      color: var(--muted);
-    }
-    .st.is-doing { color: var(--terracotta); border-color: rgba(180, 85, 58, .45); }
-    .d-done { list-style: none; margin: 8px 0 0; padding: 0; font-size: 15px; color: #3d372f; }
-    .d-done li { position: relative; padding-left: 14px; margin: 3px 0; }
-    .d-done li::before {
-      content: "·"; position: absolute; left: 2px; top: -1px; color: var(--terracotta);
-    }
-    .d-next {
-      margin: 8px 0 0; font-size: 14.5px; color: var(--muted);
-      padding-left: 14px; border-left: 2px solid var(--rule);
+    .track-hint {
+      margin-left: auto; font-family: var(--mono); font-size: 10.5px;
+      letter-spacing: .08em; color: var(--terracotta);
     }
 
-    .plan { margin-top: 44px; }
-    .plan h3 {
-      margin: 0 0 12px; font-size: 17px; letter-spacing: -0.01em;
-      color: var(--navy);
+    .rail {
+      display: flex; overflow-x: auto;
+      scroll-snap-type: x proximity;
+      padding: 24px 0 6px;
+      scrollbar-width: thin;
+      border-bottom: 1px solid var(--rule-soft);
     }
-    .plan-row {
-      display: grid; grid-template-columns: 96px 1fr; gap: 20px;
-      padding: 9px 0; border-top: 1px solid var(--rule-soft);
-      font-size: 15px;
+    .rail-fill {
+      flex: 1 0 80px; align-self: flex-start;
+      margin-top: 24px; border-top: 1px solid var(--rule);
     }
-    .plan-row:last-child { border-bottom: 1px solid var(--rule-soft); }
-    .p-when {
-      font-family: var(--mono); font-size: 12px; color: var(--terracotta);
-      letter-spacing: .03em; padding-top: 2px;
+    .rail::-webkit-scrollbar { height: 6px; }
+    .rail::-webkit-scrollbar-thumb { background: var(--rule); }
+
+    .node {
+      flex: 0 0 268px; scroll-snap-align: start;
+      padding-right: 32px; position: relative;
     }
+    .n-date {
+      display: block; font-family: var(--mono); font-size: 11.5px;
+      color: var(--muted); letter-spacing: .03em; font-variant-numeric: tabular-nums;
+    }
+    .n-line { position: relative; height: 0; border-top: 1px solid var(--rule); margin-top: 10px; }
+    .dot {
+      position: absolute; left: 0; top: -4px;
+      width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta);
+    }
+    .dot.is-doing { background: var(--paper); border: 1.5px solid var(--terracotta); }
+    .n-body { padding-top: 16px; }
+    .n-body h4 { margin: 0 0 7px; font-size: 16px; letter-spacing: -0.01em; line-height: 1.35; }
+    .n-body ul { margin: 0; padding: 0; list-style: none; font-size: 14px; color: #3d372f; }
+    .n-body li { position: relative; padding-left: 11px; margin: 3px 0; line-height: 1.55; }
+    .n-body li::before { content: "·"; position: absolute; left: 1px; color: var(--terracotta); }
+    .n-next {
+      margin: 9px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted);
+      padding-left: 11px; border-left: 2px solid var(--rule);
+    }
+
+    .plan {
+      display: flex; gap: 16px; flex-wrap: wrap; align-items: baseline;
+      margin-top: 16px;
+    }
+    .plan-label {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--terracotta);
+    }
+    .plan-items { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 14px; color: var(--muted); }
+    .plan-item b {
+      color: var(--ink); font-weight: 500; margin-right: 7px;
+      font-family: var(--mono); font-size: 12px;
+    }
+
     @media (max-width: 720px) {
-      .day { grid-template-columns: 1fr; gap: 4px; }
-      .plan-row { grid-template-columns: 76px 1fr; gap: 12px; }
+      .node { flex-basis: 236px; padding-right: 24px; }
+      .track-head h3 { font-size: 18px; }
     }
   </style>
 
