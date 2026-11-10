@@ -1,13 +1,21 @@
 ---
 title: 乌镇东栅 / 西栅 游客情感对比
-subtitle: 同一座古镇，两道门
-period: 2026.10 — 至今
-status: 代码开源
-summary: 从公开点评出发，经主题分类与情感分析，看两栅游客的体验差异到底集中在哪些维度。
+titleEn: "Dongzha vs. Xizha - Sentiment on Both Sides of Wuzhen"
+subtitle: 大学生创新创业训练计划
+subtitleEn: Undergraduate Innovation and Entrepreneurship Program
+period: 2026.09 — 2026.11
+status: 已结题
+statusEn: Completed
+summary: 从公开点评出发，经主题分类与情感分析，看同一座古镇两道门的游客体验差异到底集中在哪些维度。
+summaryEn: Classifying and scoring public reviews to see where the visitor experience of Wuzhen's two gates actually differs.
 methods: [中文 NLP, 主题分类, 情感分析, 随机森林, SHAP, Mann-Whitney U, FDR]
 repo: https://github.com/zhangyx0803/wuzhen-twin-gate-sentiment
 order: 2
 ---
+
+## 项目性质
+
+大学生创新创业训练计划项目，已结题。不准备投稿，代码与复现步骤公开，数据按需提供。
 
 ## 在回答什么
 
@@ -47,10 +55,14 @@ order: 2
 12. `11_rf_shap.py` 分组建模、置换重要性、SHAP 与偏依赖。
 13. `12_timeseries_plots.py` 时间序列与论文级图件（300 dpi）。
 
-所有路径、词典与 Key 都集中在 `code/config.py`，其他地方不用改。
+所有路径、词典与 Key 都集中在 `code/config.py`。
 
 ## 方法上的取舍
 
 - 规则分类与模型分类并行：前者可解释、可复查，后者接住长尾表达。
 - 组间检验一律做多重比较校正，避免「21 个主题里挑三个显著」。
 - 重要性同时给置换重要性与 SHAP，避免单指标误判。
+
+## 相关成果
+
+本项目产出一个软件著作权：**DEA 分析工作台系统**（登记号 2026SR1091537）。

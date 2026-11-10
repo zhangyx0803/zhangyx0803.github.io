@@ -3,23 +3,38 @@ import '../styles/global.css';
 
 interface Props {
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
   type?: 'website' | 'article';
-  image?: string;
   jsonLd?: Record<string, unknown>;
 }
 
-const { title, description, type = 'website', image = '/og.png', jsonLd } = Astro.props;
+const {
+  title,
+  titleEn,
+  description,
+  descriptionEn,
+  type = 'website',
+  jsonLd,
+} = Astro.props;
+
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL(image, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
 const siteName = 'Zane Zhang';
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-lang="zh">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script is:inline>
+    try {
+      var saved = localStorage.getItem('lang');
+      if (saved === 'en' || saved === 'zh') document.documentElement.dataset.lang = saved;
+    } catch (e) {}
+  </script>
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical.href} />
@@ -35,7 +50,6 @@ const siteName = 'Zane Zhang';
   />
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="alternate" type="application/rss+xml" title={`${siteName} · RSS`} href="/rss.xml" />
   <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
   <meta property="og:type" content={type} />
@@ -47,6 +61,7 @@ const siteName = 'Zane Zhang';
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en_US" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
@@ -56,16 +71,26 @@ const siteName = 'Zane Zhang';
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 </head>
 <body>
-  <a class="skip" href="#main">跳到正文</a>
+  <a class="skip" href="#main">跳过正文</a>
 
   <header class="site-header" id="site-header">
     <nav class="wrap">
       <a class="brand" href="/">Zane Zhang</a>
       <div class="links">
-        <a href="/projects" class="opt">研究</a>
-        <a href="/notes">笔记</a>
-        <a href="/about" class="opt">关于</a>
-        <a href="/#contact">联系</a>
+        <a href="/projects">
+          <span class="t-zh">研究</span><span class="t-en">Research</span>
+        </a>
+        <a href="/about" class="opt">
+          <span class="t-zh">关于</span><span class="t-en">About</span>
+        </a>
+        <a href="/#contact" class="opt">
+          <span class="t-zh">联系</span><span class="t-en">Contact</span>
+        </a>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang-btn="zh" aria-pressed="true">中</button>
+        <span aria-hidden="true">/</span>
+        <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
       </div>
     </nav>
   </header>
@@ -76,16 +101,31 @@ const siteName = 'Zane Zhang';
 
   <footer class="site-footer">
     <div class="wrap">
-      <span>© <span id="year">2026</span> Zane Zhang · 上海</span>
+      <span>© <span id="year">2026</span> Zane Zhang ·
+        <span class="t-zh">上海</span><span class="t-en">Shanghai</span>
+      </span>
       <span>
-        <a href="/rss.xml">RSS</a> ·
-        <a href="/sitemap-index.xml">Sitemap</a> ·
-        <a href="https://github.com/zhangyx0803">GitHub</a>
+        <a href="https://github.com/zhangyx0803">GitHub</a> ·
+        <a href="/sitemap-index.xml">Sitemap</a>
       </span>
     </div>
   </footer>
 
   <script>
+    const root = document.documentElement;
+    const applyLang = (lang) => {
+      root.dataset.lang = lang;
+      root.lang = lang === 'zh' ? 'zh-CN' : 'en';
+      try { localStorage.setItem('lang', lang); } catch (e) {}
+      document.querySelectorAll('[data-lang-btn]').forEach((b) => {
+        b.setAttribute('aria-pressed', String(b.dataset.langBtn === lang));
+      });
+    };
+    document.querySelectorAll('[data-lang-btn]').forEach((b) => {
+      b.addEventListener('click', () => applyLang(b.dataset.langBtn));
+    });
+    applyLang(root.dataset.lang === 'en' ? 'en' : 'zh');
+
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 

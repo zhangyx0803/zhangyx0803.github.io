@@ -9,18 +9,23 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+const enEntry = (await getCollection('projectsEn')).find((e) => e.id === entry.id);
+const EnContent = enEntry ? (await render(enEntry)).Content : null;
+
+const { title, titleEn, subtitle, subtitleEn, period, status, statusEn, summary, methods, repo } = entry.data;
+
 const relatedAwards = (await getCollection('achievements')).filter(
   (a) => !a.data.draft && a.data.related === entry.id
 );
-const { title, subtitle, period, status, summary, methods, repo } = entry.data;
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
   name: title,
+  alternateName: titleEn,
   description: summary,
   author: { '@type': 'Person', name: 'Zane Zhang', url: 'https://zhangyx0803.github.io/' },
-  dateModified: entry.data.period,
   keywords: methods.join(', '),
   ...(repo ? { codeRepository: repo } : {}),
 };
@@ -29,36 +34,63 @@ const jsonLd = {
 <Base title={`${title} · Zane Zhang`} description={summary} type="article" jsonLd={jsonLd}>
   <article class="article" data-nav="light">
     <div class="wrap">
-      <p class="crumb"><a href="/projects/">研究</a></p>
-      <h1 data-reveal>{title}</h1>
-      {subtitle && <p class="subtitle" data-reveal>{subtitle}</p>}
+      <h1>
+        <span class="t-zh">{title}</span><span class="t-en">{titleEn ?? title}</span>
+      </h1>
+      {subtitle && (
+        <>
+          <p class="subtitle t-zh">{subtitle}</p>
+          <p class="subtitle t-en">{subtitleEn ?? subtitle}</p>
+        </>
+      )}
 
-      <dl class="facts" data-reveal>
-        <div><dt>时间</dt><dd>{period}</dd></div>
-        <div><dt>状态</dt><dd>{status}</dd></div>
-        {methods.length > 0 && <div><dt>方法</dt><dd>{methods.join(' · ')}</dd></div>}
-        {repo && <div><dt>代码</dt><dd><a href={repo}>GitHub 仓库</a></dd></div>}
+      <dl class="facts">
+        <div>
+          <dt><span class="t-zh">时间</span><span class="t-en">Period</span></dt>
+          <dd>{period}</dd>
+        </div>
+        <div>
+          <dt><span class="t-zh">状态</span><span class="t-en">Status</span></dt>
+          <dd>
+            <span class="t-zh">{status}</span><span class="t-en">{statusEn ?? status}</span>
+          </dd>
+        </div>
+        {methods.length > 0 && (
+          <div>
+            <dt><span class="t-zh">方法</span><span class="t-en">Methods</span></dt>
+            <dd>{methods.join(' · ')}</dd>
+          </div>
+        )}
+        {repo && (
+          <div>
+            <dt><span class="t-zh">代码</span><span class="t-en">Code</span></dt>
+            <dd><a href={repo}>GitHub</a></dd>
+          </div>
+        )}
       </dl>
 
-      <div class="prose" data-reveal>
-        <Content />
-      </div>
+      <div class="prose t-zh"><Content /></div>
+      {EnContent && <div class="prose t-en"><EnContent /></div>}
 
       {relatedAwards.length > 0 && (
         <section class="related-awards">
-          <h2>相关成果</h2>
+          <h2><span class="t-zh">相关成果</span><span class="t-en">Related output</span></h2>
           {relatedAwards.map((a) => (
             <div class="ra">
-              <span class="ra-kind">{a.data.kind}</span>
+              <span class="ra-kind">
+                <span class="t-zh">{a.data.kind}</span><span class="t-en">{a.data.kindEn ?? a.data.kind}</span>
+              </span>
               <div>
-                <h3>{a.data.title}</h3>
+                <h3>
+                  <span class="t-zh">{a.data.title}</span><span class="t-en">{a.data.titleEn ?? a.data.title}</span>
+                </h3>
                 <p>
-                  {[
-                    a.data.number && `登记号 ${a.data.number}`,
-                    a.data.certificate,
-                    a.data.holder,
-                    a.data.version,
-                  ].filter(Boolean).join(' · ')}
+                  <span class="t-zh">
+                    {[a.data.number && `登记号 ${a.data.number}`, a.data.certificate, a.data.holder, a.data.version].filter(Boolean).join(' · ')}
+                  </span>
+                  <span class="t-en">
+                    {[a.data.number && `Reg. ${a.data.number}`, a.data.certificateEn ?? a.data.certificate, a.data.holderEn ?? a.data.holder, a.data.version].filter(Boolean).join(' · ')}
+                  </span>
                 </p>
               </div>
             </div>
@@ -67,15 +99,18 @@ const jsonLd = {
       )}
 
       <nav class="article-foot">
-        <a href="/projects/">← 返回研究列表</a>
-        <a href="/#contact">需要数据？写信给我 →</a>
+        <a href="/projects/">
+          <span class="t-zh">← 返回研究</span><span class="t-en">← All research</span>
+        </a>
+        <a href="/#contact">
+          <span class="t-zh">需要数据？写信给我 →</span><span class="t-en">Need the data? Write to me →</span>
+        </a>
       </nav>
     </div>
   </article>
 
   <style>
-    .article { padding: 120px 0 100px; }
-    .crumb { margin: 0 0 18px; font-size: 14px; color: var(--muted); }
+    .article { min-height: 100svh; padding: 140px 0 100px; }
     .article h1 {
       margin: 0;
       font-size: clamp(30px, 4.6vw, 52px);
@@ -95,26 +130,17 @@ const jsonLd = {
       border-bottom: 1px solid var(--rule);
       font-size: 15px;
     }
-    .facts dt { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+    .facts dt { color: var(--muted); font-size: 12px; letter-spacing: .06em; margin-bottom: 4px; }
     .facts dd { margin: 0; }
-    .article-foot {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px 32px;
-      justify-content: space-between;
-      margin-top: 64px;
-      padding-top: 28px;
-      border-top: 1px solid var(--rule);
-      font-size: 16px;
-    }
+
     .related-awards { margin-top: 64px; }
     .related-awards h2 {
-      margin: 0 0 14px; font-size: 13px; letter-spacing: .14em;
+      margin: 0 0 14px; font-size: 12px; letter-spacing: .14em;
       text-transform: uppercase; font-family: var(--mono); color: var(--muted);
       border: 0; padding: 0;
     }
     .ra {
-      display: grid; grid-template-columns: 64px 1fr; gap: 24px;
+      display: grid; grid-template-columns: 96px 1fr; gap: 24px;
       padding: 16px 0; border-top: 1px solid var(--rule-soft);
     }
     .ra:last-child { border-bottom: 1px solid var(--rule-soft); }
@@ -124,6 +150,17 @@ const jsonLd = {
     }
     .ra h3 { margin: 0 0 4px; font-size: 18px; }
     .ra p { margin: 0; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
-    @media (max-width: 720px) { .ra { grid-template-columns: 1fr; gap: 4px; } .ra-kind { padding-top: 0; } }
+    @media (max-width: 720px) {
+      .ra { grid-template-columns: 1fr; gap: 4px; }
+      .ra-kind { padding-top: 0; }
+    }
+
+    .article-foot {
+      display: flex; flex-wrap: wrap; gap: 12px 32px;
+      justify-content: space-between;
+      margin-top: 64px; padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      font-size: 16px;
+    }
   </style>
 </Base>

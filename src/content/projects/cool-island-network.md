@@ -1,9 +1,13 @@
 ---
 title: 上海市冷岛网络演变
+titleEn: Evolution of Shanghai's Cool-Island Network
 subtitle: 2015 — 2025 · 跨期归因
+subtitleEn: 2015 — 2025 · Attribution across periods
 period: 2026.10 — 至今
 status: 进行中
+statusEn: In progress
 summary: 三期遥感影像识别冷源与源地，构建冷岛廊道网络；再用 2×2 析因分解判断变化来自源地格局还是阻力面。
+summaryEn: Three periods of satellite imagery locate cold sources and patches; the resulting corridor network is then decomposed to tell whether change came from source pattern or resistance surface.
 methods: [MSPA, MCR, 电路理论, 2×2 析因分解, 熵权法, ArcGIS Pro]
 repo: https://github.com/zhangyx0803/shanghai-cool-island-network
 order: 1
@@ -48,10 +52,10 @@ order: 1
 9. **做归因**：两期源地 × 两期阻力面四种组合，拆成源地效应、阻力效应与交互项。
 10. **排优先级**：改善潜力 × 热环境紧迫性，熵权法定权，用同一套权重跨期比较。
 
-## 目前的进度
+## 目前进度
 
 - 已完成：问题定义、数据清单、方法链与参数、12 步操作手册。
 - 进行中：影像入库与地表温度反演。
 - 未开始：源地、阻力面、廊道、瓶颈、归因。
 
-进度会记在[时间线](/#log)上。
+进度记在首页的逐日时间轴上。

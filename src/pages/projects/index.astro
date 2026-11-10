@@ -8,32 +8,35 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 <Base
   title="研究 · Zane Zhang"
   description="上海市冷岛网络演变、乌镇双栅游客情感对比：研究问题、所用数据、数据索取方式与复现步骤。"
-  jsonLd={{
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: '研究',
-    description: '两个进行中的研究项目，含数据清单与复现步骤。',
-  }}
 >
   <section class="section" data-nav="light">
     <div class="wrap">
-      <p class="crumb"><a href="/">Zane Zhang</a></p>
-      <h1 class="page-title" data-reveal>研究</h1>
-      <p class="page-lede" data-reveal>
-        两个进行中的项目。每一页都写明用了什么数据、数据怎么拿、怎么复现。
-      </p>
+      <h1 class="page-title">
+        <span class="t-zh">研究</span><span class="t-en">Research</span>
+      </h1>
 
-      <div class="work-list" style="margin-top:56px">
+      <div class="work-list">
         {projects.map((p, i) => (
-          <article class="work-item" data-reveal style={`--d:${i * 70}ms`}>
+          <article class="pub" data-reveal style={`--d:${i * 60}ms`}>
+            <div class="year">{p.data.period.split('—')[0].trim().slice(0, 7)}</div>
             <div>
-              <h3><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
-              <p class="meta-line">{p.data.period} · {p.data.status}</p>
-            </div>
-            <div>
-              <p>{p.data.summary}</p>
-              {p.data.methods.length > 0 && <p class="meta-line">{p.data.methods.join(' · ')}</p>}
-              <a class="more" href={`/projects/${p.id}/`}>数据与复现步骤 →</a>
+              <h3>
+                <a href={`/projects/${p.id}/`}>
+                  <span class="t-zh">{p.data.title}</span><span class="t-en">{p.data.titleEn ?? p.data.title}</span>
+                </a>
+              </h3>
+              <p class="meta-line">
+                <span class="t-zh">{p.data.status}</span><span class="t-en">{p.data.statusEn ?? p.data.status}</span>
+                {p.data.methods.length ? ` · ${p.data.methods.join(' · ')}` : ''}
+              </p>
+              <p class="t-zh">{p.data.summary}</p>
+              <p class="t-en">{p.data.summaryEn ?? p.data.summary}</p>
+              <div class="links">
+                <a href={`/projects/${p.id}/`}>
+                  <span class="t-zh">数据与复现 →</span><span class="t-en">Data and reproduction →</span>
+                </a>
+                {p.data.repo && <a href={p.data.repo}>GitHub</a>}
+              </div>
             </div>
           </article>
         ))}
@@ -42,17 +45,12 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   </section>
 
   <style>
-    .section { padding: 120px 0 100px; }
-    .crumb { margin: 0 0 18px; font-size: 14px; color: var(--muted); }
     .page-title {
-      margin: 0;
+      margin: 0 0 40px;
       font-size: clamp(34px, 5vw, 60px);
       letter-spacing: -0.04em;
       line-height: 1.05;
-      font-weight: 600;
     }
-    .page-lede { margin: 18px 0 0; font-size: 19px; color: var(--muted); max-width: 34em; }
     .work-list { border-top: 1px solid var(--rule); }
-    .work-list .work-item:first-child { border-top: 0; }
   </style>
 </Base>
