@@ -3,389 +3,405 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zane Zhang · 地理信息科学</title>
-<meta name="description" content="Zane Zhang (zhangyx0803) — GIS, spatial analysis, remote sensing and urban climate. 地理信息科学 · 空间分析 · 遥感与城市气候。">
-<meta property="og:title" content="Zane Zhang · GIS">
-<meta property="og:description" content="地理信息科学 · 空间分析 · 遥感与城市气候">
+<title>Zane Zhang — 地理信息科学</title>
+<meta name="description" content="Zane Zhang，地理信息科学。研究城市冷岛网络、遥感反演与专题制图。">
+<meta property="og:title" content="Zane Zhang — 地理信息科学">
+<meta property="og:description" content="研究热在哪里聚集、廊道在哪里断开、修复该从哪里开始。">
 <meta property="og:type" content="website">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
   :root {
-    --bg: #0d1117; --panel: #11161d; --line: #232c37; --ink: #e6edf3;
-    --dim: #8b949e; --mute: #6e7681; --acc: #3fb950; --acc2: #2f9e56;
-    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --bg: #ffffff;
+    --ink: #1d1d1f;
+    --sub: #6e6e73;
+    --line: #d2d2d7;
+    --dark: #000000;
+    --dark-ink: #f5f5f7;
+    --dark-sub: #86868b;
+    --link: #0066cc;
+    --ease: cubic-bezier(.16, 1, .3, 1);
   }
-  @media (prefers-color-scheme: light) {
-    :root { --bg:#ffffff; --panel:#f7fafc; --line:#dbe3ec; --ink:#1b232c; --dim:#5b6b7c; --mute:#8d9cab; --acc:#2f9e56; --acc2:#1d6b3b; }
-  }
+
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 var(--sans);
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 17px;
+    line-height: 1.58;
     -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
   }
-  a { color: var(--acc); text-decoration: none; }
+  a { color: var(--link); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
 
-  /* ---- nav ---- */
-  header { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px);
-    background: color-mix(in srgb, var(--bg) 82%, transparent); border-bottom: 1px solid var(--line); }
-  nav { display: flex; align-items: center; gap: 22px; height: 56px; font: 13px/1 var(--mono); }
-  nav .brand { font-weight: 700; letter-spacing: .06em; color: var(--ink); }
-  nav .brand span { color: var(--acc); }
-  nav .links { margin-left: auto; display: flex; gap: 18px; }
-  nav .links a { color: var(--dim); }
-  nav .links a:hover { color: var(--acc); text-decoration: none; }
-  @media (max-width: 640px) { nav .links { gap: 12px; font-size: 12px; } }
+  .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 720px) { .wrap { padding: 0 20px; } }
 
-  /* ---- hero ---- */
-  .hero { padding: 72px 0 28px; }
-  .kicker { font: 12px/1 var(--mono); letter-spacing: .18em; color: var(--mute); text-transform: uppercase; }
-  h1 { margin: 14px 0 10px; font-size: clamp(34px, 6vw, 58px); line-height: 1.08; letter-spacing: -.02em; }
-  h1 em { font-style: normal; color: var(--acc); }
-  .lede { max-width: 62ch; color: var(--dim); font-size: 17px; }
-  .coords { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center;
-    font: 13px/1 var(--mono); color: var(--dim); }
-  .chip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px;
-    border: 1px solid var(--line); border-radius: 999px; background: var(--panel); }
-  .chip b { color: var(--acc); font-weight: 600; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 0 4px color-mix(in srgb, var(--acc) 18%, transparent); }
-
-  /* ---- map ---- */
-  .mapcard { margin: 26px 0 8px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
-  .mapstage { position: relative; }
-  .mapstage img { display: block; width: 100%; height: auto; }
-  .crosshair { position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; pointer-events: none;
-    opacity: 0; transition: opacity .12s; }
-  .crosshair::before, .crosshair::after { content: ""; position: absolute; background: var(--acc); }
-  .crosshair::before { left: 8px; top: 0; width: 2px; height: 18px; }
-  .crosshair::after { top: 8px; left: 0; height: 2px; width: 18px; }
-  .mapstage:hover .crosshair { opacity: .9; }
-  .readout { padding: 5px 9px; border-radius: 7px; border: 1px solid var(--line);
-    background: var(--bg); font: 12px/1.4 var(--mono); color: var(--dim); white-space: nowrap; }
-  .readout b { color: var(--acc); }
-  .mapnote { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between;
-    padding: 10px 14px; border-top: 1px solid var(--line); font: 11.5px/1.5 var(--mono); color: var(--mute); }
-
-  /* ---- sections ---- */
-  section { padding: 56px 0; border-top: 1px solid var(--line); }
-  h2 { margin: 0 0 6px; font-size: 13px; letter-spacing: .18em; text-transform: uppercase;
-    font-family: var(--mono); color: var(--mute); }
-  h2 + p { margin: 0 0 26px; color: var(--dim); max-width: 68ch; }
-
-  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-  .card { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--panel);
-    transition: border-color .15s, transform .15s; display: flex; flex-direction: column; gap: 10px; }
-  .card:hover { border-color: var(--acc2); transform: translateY(-2px); }
-  .card .tag { font: 11px/1 var(--mono); color: var(--mute); letter-spacing: .1em; }
-  .card h3 { margin: 0; font-size: 17px; }
-  .card h3 a { color: var(--ink); }
-  .card h3 a:hover { color: var(--acc); text-decoration: none; }
-  .card p { margin: 0; color: var(--dim); font-size: 14.5px; }
-  .card .meta { margin-top: auto; font: 12px/1.5 var(--mono); color: var(--mute); }
-
-  ul.plain { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  ul.plain li { display: flex; gap: 12px; padding: 12px 14px; border: 1px solid var(--line);
-    border-radius: 10px; background: var(--panel); font-size: 14.5px; }
-  ul.plain li span.k { flex: 0 0 150px; color: var(--mute); font-family: var(--mono); font-size: 12.5px; }
-  @media (max-width: 560px) { ul.plain li { flex-direction: column; gap: 4px; } ul.plain li span.k { flex: none; } }
-
-  footer { padding: 40px 0 60px; border-top: 1px solid var(--line); color: var(--mute); font: 12.5px/1.7 var(--mono); }
-  .foot { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
-  button.copy { font: inherit; cursor: pointer; background: none; border: 1px solid var(--line);
-    color: var(--dim); border-radius: 8px; padding: 4px 9px; }
-  button.copy:hover { color: var(--acc); border-color: var(--acc2); }
-
-  /* ---- timeline & chain ---- */
-  .tl { position: relative; list-style: none; margin: 6px 0 0; padding: 0 0 0 28px; }
-  .tl::before { content: ""; position: absolute; left: 8px; top: 10px; bottom: 12px; width: 1px; background: var(--line); }
-  .tl li { position: relative; padding-bottom: 26px; }
-  .tl li:last-child { padding-bottom: 0; }
-  .tl li::before { content: ""; position: absolute; left: -28px; top: 4px; width: 9px; height: 9px;
-    border-radius: 50%; background: var(--acc); box-shadow: 0 0 0 4px color-mix(in srgb, var(--acc) 15%, transparent); }
-  .tl li.now::before { animation: ring 2.4s ease-out infinite; }
-  @keyframes ring {
-    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--acc) 55%, transparent); }
-    70% { box-shadow: 0 0 0 12px transparent; }
-    100% { box-shadow: 0 0 0 0 transparent; }
+  /* ---------- nav ---------- */
+  header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    background: rgba(255, 255, 255, .72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s;
   }
-  .tl .when { font: 12px/1 var(--mono); color: var(--mute); letter-spacing: .06em; }
-  .tl .when em { font-style: normal; color: var(--acc); }
-  .tl h3 { margin: 7px 0 4px; font-size: 16.5px; }
-  .tl p { margin: 0; color: var(--dim); font-size: 14.5px; max-width: 70ch; }
-  .tl .tag { display: inline-block; margin-top: 9px; padding: 4px 9px; border: 1px solid var(--line);
-    border-radius: 999px; font: 11px/1 var(--mono); color: var(--mute); }
+  header.scrolled { background: rgba(255, 255, 255, .8); border-bottom-color: rgba(0, 0, 0, .1); }
+  header.on-dark { background: rgba(0, 0, 0, .55); border-bottom-color: rgba(255, 255, 255, .1); }
+  header.on-dark .brand { color: #f5f5f7; }
+  header.on-dark .links a { color: #a1a1a6; }
+  header.on-dark .links a:hover { color: #ffffff; }
+  nav { display: flex; align-items: center; height: 48px; font-size: 13px; }
+  nav .brand { font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+  nav .links { margin-left: auto; display: flex; gap: 26px; }
+  nav .links a { color: var(--sub); }
+  nav .links a:hover { color: var(--ink); text-decoration: none; }
+  @media (max-width: 720px) { nav .links { gap: 16px; } nav .links a:first-child { display: none; } }
 
-  .subhead { margin: 44px 0 2px; font: 12px/1 var(--mono); letter-spacing: .18em; color: var(--mute); text-transform: uppercase; }
-  .chain { display: flex; padding: 24px 2px 8px; overflow-x: auto; }
-  .chain .step { flex: 1 0 200px; position: relative; padding-right: 18px; }
-  .chain .step::before { content: ""; position: absolute; left: 0; top: 2px; width: 11px; height: 11px;
-    border-radius: 50%; border: 1.6px solid var(--acc2); background: var(--bg); }
-  .chain .step::after { content: ""; position: absolute; left: 13px; right: 6px; top: 7px; height: 1px;
-    background: repeating-linear-gradient(to right, var(--line) 0 5px, transparent 5px 10px); }
-  .chain .step:last-child::after { display: none; }
-  .chain .num { display: block; padding-left: 22px; font: 11px/1 var(--mono); color: var(--acc2); letter-spacing: .1em; }
-  .chain b { display: block; padding-left: 22px; margin-top: 7px; font-size: 14.5px; }
-  .chain span.d { display: block; padding-left: 22px; margin-top: 5px; color: var(--dim); font-size: 13px; line-height: 1.5; }
+  /* ---------- hero ---------- */
+  .hero {
+    background: var(--dark); color: var(--dark-ink);
+    padding: 168px 0 132px; min-height: 100vh;
+    display: flex; align-items: center;
+  }
+  .kicker { margin: 0 0 26px; font-size: 15px; color: var(--dark-sub); letter-spacing: .01em; }
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(52px, 10vw, 128px);
+    line-height: .96;
+    letter-spacing: -0.045em;
+    font-weight: 600;
+  }
+  .hero .lede {
+    margin: 34px 0 0; max-width: 21em;
+    font-size: clamp(20px, 2.2vw, 25px);
+    line-height: 1.42; color: #c7c7cc;
+    letter-spacing: -0.015em;
+  }
+  .hero .meta {
+    margin: 64px 0 0; font-size: 14px; color: var(--dark-sub);
+  }
+  .hero .meta b { color: var(--dark-ink); font-weight: 500; }
+  .cue { margin-top: 72px; font-size: 13px; color: #6e6e73; display: flex; align-items: center; gap: 10px; }
+  .cue i {
+    display: block; width: 1px; height: 34px; background: linear-gradient(to bottom, #6e6e73, transparent);
+    animation: drop 2.2s var(--ease) infinite;
+  }
+  @keyframes drop { 0% { opacity: 0; transform: translateY(-6px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(10px); } }
 
+  /* ---------- story ---------- */
+  .story { padding: 128px 0 40px; background: var(--bg); }
+  .head { max-width: 760px; margin-bottom: 48px; }
+  .head h2 {
+    margin: 0; font-size: clamp(34px, 4.4vw, 56px); line-height: 1.1;
+    letter-spacing: -0.035em; font-weight: 600;
+  }
+  .head p { margin: 18px 0 0; font-size: 19px; color: var(--sub); max-width: 34em; }
+
+  .story-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 88px; align-items: start; }
+  .stage { position: sticky; top: 92px; height: min(66vh, 610px); }
+  .stage img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+    opacity: 0; transform: scale(1.035);
+    transition: opacity 1s var(--ease), transform 1.6s var(--ease);
+  }
+  .stage img.on { opacity: 1; transform: scale(1); }
+  .stage-inner { position: relative; width: 100%; height: 100%; }
+  .stage-cap {
+    margin-top: 14px; font-size: 13px; color: var(--sub); text-align: left;
+  }
+  .steps .step { min-height: 74vh; display: flex; flex-direction: column; justify-content: center; }
+  .steps .step .n { font-size: 13px; color: #86868b; }
+  .steps .step h3 {
+    margin: 14px 0 10px; font-size: clamp(26px, 2.8vw, 34px); letter-spacing: -0.03em;
+    font-weight: 600; color: #b0b0b5; transition: color .6s var(--ease);
+  }
+  .steps .step p { margin: 0; color: #a1a1a6; max-width: 30em; transition: color .6s var(--ease); }
+  .steps .step.on h3 { color: var(--ink); }
+  .steps .step.on p { color: var(--sub); }
+  @media (max-width: 900px) {
+    .story-grid { grid-template-columns: 1fr; gap: 24px; }
+    .stage { position: relative; top: 0; aspect-ratio: 33 / 34; max-width: 520px; margin: 0 auto; }
+    .stage-cap { bottom: -2px; }
+    .steps .step { min-height: 0; padding: 44px 0; }
+  }
+
+  /* ---------- research ---------- */
+  .research { background: var(--dark); color: var(--dark-ink); padding: 132px 0 144px; }
+  .research .head h2 { color: var(--dark-ink); }
+  .feature { padding: 48px 0; border-top: 1px solid #2a2a2c; }
+  .feature-row { border-bottom: 1px solid #2a2a2c; }
+  .feature .row { display: grid; grid-template-columns: 1fr 1.35fr; gap: 56px; align-items: start; }
+  .feature h3 {
+    margin: 0; font-size: clamp(26px, 3vw, 38px); line-height: 1.14;
+    letter-spacing: -0.03em; font-weight: 600;
+  }
+  .feature .state { margin: 14px 0 0; font-size: 14px; color: var(--dark-sub); }
+  .feature p { margin: 0 0 18px; color: #a1a1a6; font-size: 18px; }
+  .feature .more { font-size: 16px; color: #2997ff; }
+  .feature .more:hover { text-decoration: underline; }
+  @media (max-width: 860px) { .feature .row { grid-template-columns: 1fr; gap: 18px; } }
+
+  /* ---------- log ---------- */
+  .log { padding: 132px 0 140px; }
+  .log .head { margin-bottom: 30px; }
+  .row-list { border-top: 1px solid var(--line); }
+  .log .row {
+    display: grid; grid-template-columns: 168px 1fr; gap: 32px;
+    padding: 34px 0; border-bottom: 1px solid var(--line); align-items: baseline;
+  }
+  .log .row .yr { font-size: 15px; color: var(--sub); font-variant-numeric: tabular-nums; }
+  .log .row h3 { margin: 0 0 8px; font-size: 22px; letter-spacing: -0.02em; font-weight: 600; }
+  .log .row p { margin: 0; color: var(--sub); max-width: 44em; }
+  .log .row.now .yr { color: var(--ink); }
+  .log .row.now .yr::before {
+    content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 9px;
+    border-radius: 50%; background: #2f9e56; vertical-align: 2px;
+  }
+  @media (max-width: 720px) { .log .row { grid-template-columns: 1fr; gap: 8px; } }
+
+  /* ---------- contact ---------- */
+  .contact { padding: 120px 0 140px; border-top: 1px solid var(--line); }
+  .contact h2 { margin: 0 0 24px; font-size: clamp(30px, 3.6vw, 44px); letter-spacing: -0.03em; font-weight: 600; }
+  .contact .big { display: inline-block; font-size: clamp(22px, 3vw, 34px); letter-spacing: -0.02em; }
+  .contact .alt { margin: 30px 0 0; color: var(--sub); font-size: 16px; }
+
+  footer { padding: 34px 0 54px; color: var(--sub); font-size: 13px; border-top: 1px solid var(--line); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: space-between; }
+
+  /* ---------- reveal ---------- */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .95s var(--ease), transform .95s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .stage img { transition: none; }
+    .cue i { animation: none; }
+    html { scroll-behavior: auto; }
+  }
 </style>
 </head>
 <body>
 
-<header>
+<header id="hdr">
   <nav class="wrap">
-    <a class="brand" href="#top">ZANE<span>·</span>ZHANG</a>
+    <a class="brand" href="#top">Zane Zhang</a>
     <div class="links">
-      <a href="#map">Map</a>
-      <a href="#log">Log</a>
-      <a href="#research">Research</a>
-      <a href="#toolkit">Toolkit</a>
-      <a href="#contact">Contact</a>
+      <a href="#map">地图</a>
+      <a href="#work">研究</a>
+      <a href="#log">年表</a>
+      <a href="#contact">联系</a>
     </div>
   </nav>
 </header>
 
 <main id="top">
-  <div class="wrap hero">
-    <div class="kicker">Geographic Information Science · Shanghai</div>
-    <h1>读地图的人，<br>也在<em>画地图</em>。</h1>
-    <p class="lede">
-      地理信息科学本科生。关心城市冷岛网络、遥感反演与专题制图——
-      以及所有「一件事为什么发生在那个位置」的问题。
-    </p>
 
-    <div class="coords">
-      <span class="chip"><i class="dot"></i><b>31.1650°N</b> 121.4050°E</span>
-      <span class="chip" id="weather-chip">天气加载中…</span>
-      <span class="chip" id="clock-chip">--:--:--</span>
-      <span class="chip">UTC+8 · ALT ≈ 4 m</span>
-    </div>
-
-    <div class="mapcard" id="map">
-      <div class="mapstage" id="mapstage">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="assets/geo-atlas-dark.svg">
-          <img id="atlas" src="assets/geo-atlas-light.svg" alt="三个尺度的定位图：中国、长江三角洲、上海市域">
-        </picture>
-        <div class="crosshair" id="crosshair"></div>
-        
-      </div>
-      <div class="mapnote">
-        <span>同一 Albers 等积圆锥投影（25°N / 47°N，中央经线 105°E），三个视口 —— 读数由投影逆变换实时计算。</span>
-        <span class="readout" id="readout">把鼠标移到图上 · hover the map</span>
-      </div>
-    </div>
-  </div>
-
-  <section id="log">
+  <section class="hero" data-nav="dark">
     <div class="wrap">
-      <h2>Log / 研究线</h2>
-      <p>已经做过的、正在做的，以及接下来几步。做完一步就把状态往前挪一格。</p>
+      <p class="kicker">地理信息科学 · 上海</p>
+      <h1>Zane Zhang</h1>
+      <p class="lede">我研究热在哪里聚集、廊道在哪里断开、修复该从哪里开始。</p>
+      <p class="meta">
+        <b>31.1650°N&nbsp;&nbsp;121.4050°E</b> · 上海徐汇 · <span id="wx">正在读取天气…</span>
+      </p>
+      <p class="cue"><i></i>继续向下</p>
+    </div>
+  </section>
 
-      <ol class="tl">
-        <li>
-          <span class="when">2026.10.15</span>
-          <h3>乌镇双栅：把一条分析流程搭起来</h3>
-          <p>从点评与 POI 出发，把「采集 → 清洗 → 地点归属 → 主题分类 → 情感 → 建模」拆成 13 个可单独运行的步骤，
-             规则分类留作可解释基线，模型用来接住长尾表达。</p>
-          <span class="tag">NLP × 空间</span>
-        </li>
+  <section class="story" id="map" data-nav="light">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>先确认它在哪。</h2>
+        <p>同一套投影，三个尺度：从国土，到城市群，到一条街。</p>
+      </div>
 
-        <li>
-          <span class="when">2026.10.20</span>
-          <h3>上海市冷岛网络：开题</h3>
-          <p>定下骨架：三期影像、三套阻力面、三类瓶颈指标，再用 2×2 析因分解把网络的变化拆成
-             「源地效应 / 阻力效应 / 交互项」。想回答的是十年间怎么变、为什么变、先修哪里。</p>
-          <span class="tag">网络分析 · 遥感</span>
-        </li>
-
-        <li>
-          <span class="when">2026.11.10</span>
-          <h3>开源与主页</h3>
-          <p>三个研究仓库与个人主页上线：只公开项目说明与代码，论文原文、图件与原始数据保留在本地。</p>
-          <span class="tag">工程 · Git</span>
-        </li>
-
-        <li class="now">
-          <span class="when"><em>2026.11 — 至今</em> · 进行中</span>
-          <h3>冷岛网络：数据与地表温度反演</h3>
-          <p>影像与土地覆被入库，做地表温度、植被与水体指数反演，先把「冷源在哪里」落成一张可靠的栅格。</p>
-          <span class="tag">in progress</span>
-        </li>
-      </ol>
-
-      <div class="subhead">接下来 / Next</div>
-      <div class="chain">
-        <div class="step">
-          <span class="num">01</span>
-          <b>源地识别</b>
-          <span class="d">形态学空间格局分析提核心区与源地，看斑块结构怎么变。</span>
+      <div class="story-grid">
+        <div class="stage">
+          <div class="stage-inner" id="stage">
+            <img class="on" data-i="0" src="assets/stage-cn.svg" alt="中国尺度">
+            <img data-i="1" src="assets/stage-yrd.svg" alt="长江三角洲尺度">
+            <img data-i="2" src="assets/stage-sh.svg" alt="上海市域尺度">
+          </div>
+          <div class="stage-cap" id="stage-cap">中国</div>
         </div>
-        <div class="step">
-          <span class="num">02</span>
-          <b>阻力面与廊道</b>
-          <span class="d">多因子加权成阻力面，最小累积阻力模型求廊道骨架。</span>
-        </div>
-        <div class="step">
-          <span class="num">03</span>
-          <b>瓶颈识别</b>
-          <span class="d">高阻力段与电路夹点并行比较，锁定真正该修的区段。</span>
-        </div>
-        <div class="step">
-          <span class="num">04</span>
-          <b>归因与优先级</b>
-          <span class="d">2×2 分解加熵权排序，出图并写成论文。</span>
+
+        <div class="steps" id="steps">
+          <div class="step on" data-i="0">
+            <div class="n">01</div>
+            <h3>中国</h3>
+            <p>上海在长江入海口。季风、平原、密集的人口，决定了它夏天的热不是偶然。</p>
+          </div>
+          <div class="step" data-i="1">
+            <div class="n">02</div>
+            <h3>长江三角洲</h3>
+            <p>往近处看，水域与建成区交替出现。冷源不是孤岛，它们被水系与绿带串成网络。</p>
+          </div>
+          <div class="step" data-i="2">
+            <div class="n">03</div>
+            <h3>徐汇</h3>
+            <p>再近一步，是这 3 公里。我的大部分数据，从这里开始。</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="research">
+  <section class="research" id="work" data-nav="dark">
     <div class="wrap">
-      <h2>Research</h2>
-      <p>只公开项目说明与代码；论文原文、图件与原始数据不公开。</p>
+      <div class="head reveal">
+        <h2>两条线。</h2>
+        <p>一条看城市的冷与热，一条看人的句子。</p>
+      </div>
 
-      <div class="grid">
-        <article class="card">
-          <div class="tag">01 · 网络分析</div>
-          <h3><a href="https://github.com/zhangyx0803/shanghai-cool-island-network">上海市冷岛网络演变</a></h3>
-          <p>十年间城市的冷源与廊道怎么变，变化来自源地还是阻力面，修复该先落在哪一段。</p>
-          <div class="meta">MSPA · MCR · 电路理论 · 2×2 析因分解</div>
-        </article>
+      <article class="feature reveal">
+        <div class="row">
+          <div>
+            <h3>上海市冷岛网络演变<br>2015 — 2025</h3>
+            <p class="state">进行中 · 网络分析</p>
+          </div>
+          <div>
+            <p>用三期遥感影像识别冷源与源地，构建冷岛廊道网络；再用 2×2 析因分解判断：变化到底来自源地格局，还是阻力面。</p>
+            <p>目标是把「怎么变、为什么变、先修哪」串成一条可复现的分析链。</p>
+            <a class="more" href="https://github.com/zhangyx0803/shanghai-cool-island-network">看项目 →</a>
+          </div>
+        </div>
+      </article>
 
-        <article class="card">
-          <div class="tag">02 · 文本与空间</div>
-          <h3><a href="https://github.com/zhangyx0803/wuzhen-twin-gate-sentiment">乌镇东栅 / 西栅 游客情感</a></h3>
-          <p>同一个古镇的两道门，游客的体验差在哪里，又由哪些维度驱动。</p>
-          <div class="meta">中文 NLP · 随机森林 + SHAP · MWU + FDR</div>
-        </article>
+      <article class="feature reveal">
+        <div class="row">
+          <div>
+            <h3>乌镇东栅 / 西栅<br>游客情感对比</h3>
+            <p class="state">代码开源 · 文本与空间</p>
+          </div>
+          <div>
+            <p>同一座古镇，两道门，两种体验。从公开点评出发，经主题分类与情感分析，再看哪些体验维度真正拉开了差距。</p>
+            <p>规则分类留作可解释基线，随机森林与 SHAP 负责接住长尾表达。</p>
+            <a class="more" href="https://github.com/zhangyx0803/wuzhen-twin-gate-sentiment">看项目 →</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="log" id="log" data-nav="light">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>研究线。</h2>
+        <p>做完一步，就把它挪到上面去。</p>
+      </div>
+
+      <div class="row-list">
+        <div class="row reveal">
+          <div class="yr">2026.10</div>
+          <div>
+            <h3>乌镇双栅：把一条分析流程搭起来</h3>
+            <p>采集、清洗、地点归属、主题分类、情感、建模，拆成 13 个能单独跑的步骤。</p>
+          </div>
+        </div>
+        <div class="row reveal">
+          <div class="yr">2026.10</div>
+          <div>
+            <h3>上海市冷岛网络：开题</h3>
+            <p>定下三期影像、三套阻力面、三类瓶颈指标，以及一条归因路径。</p>
+          </div>
+        </div>
+        <div class="row reveal">
+          <div class="yr">2026.11</div>
+          <div>
+            <h3>开源与主页</h3>
+            <p>项目仓库与这个站点上线。只公开说明与代码，论文、图件与数据留在本地。</p>
+          </div>
+        </div>
+        <div class="row reveal now">
+          <div class="yr">现在</div>
+          <div>
+            <h3>冷岛网络：数据与地表温度反演</h3>
+            <p>影像与土地覆被入库，做地表温度、植被与水体指数，先把「冷源在哪」落成一张可靠的栅格。</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="toolkit">
+  <section class="contact" id="contact" data-nav="light">
     <div class="wrap">
-      <h2>Toolkit</h2>
-      <p>从影像到图件，能自己走完整条链路。</p>
-      <ul class="plain">
-        <li><span class="k">GIS 平台</span><span>ArcGIS Pro（arcpy · Spatial Analyst）· QGIS · 国产 GIS 平台</span></li>
-        <li><span class="k">遥感</span><span>Landsat 8/9 预处理 · 地表温度反演 · NDVI / NDWI · 土地覆被</span></li>
-        <li><span class="k">空间分析</span><span>MSPA · MCR · 电路理论 · 网络连通性 · 空间统计</span></li>
-        <li><span class="k">编程</span><span>Python · R · C++ · Shell</span></li>
-        <li><span class="k">制图</span><span>专题制图 · 图集编排 · SVG / Pillow 程序化出图</span></li>
-        <li><span class="k">数据</span><span>PostGIS · GeoJSON · 栅格代数 · 批量处理脚本</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="wrap">
-      <h2>Contact</h2>
-      <p>欢迎聊热岛、冷岛网络、气候制图，或者任何带位置的问题。</p>
-      <ul class="plain">
-        <li><span class="k">Email</span><span><a href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a></span></li>
-        <li><span class="k">GitHub</span><span><a href="https://github.com/zhangyx0803">github.com/zhangyx0803</a></span></li>
-        <li><span class="k">Coordinates</span><span><a href="https://www.openstreetmap.org/?mlat=31.1650&mlon=121.4050#map=15/31.1650/121.4050">31.1650°N 121.4050°E — 上海 · 徐汇</a></span></li>
-      </ul>
+      <h2 class="reveal">聊聊地图。</h2>
+      <a class="big reveal" href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>
+      <p class="alt reveal">
+        也可以在 <a href="https://github.com/zhangyx0803">GitHub</a> 找到我 ·
+        <a href="https://www.openstreetmap.org/?mlat=31.1650&mlon=121.4050#map=15/31.1650/121.4050">31.1650°N 121.4050°E</a>
+      </p>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap foot">
-    <span>© <span id="year"></span> Zane Zhang · 手写 HTML/CSS，无框架、无构建、无追踪。</span>
-    <span>Albers 25°N/47°N · WGS 84 · Map data © DataV.GeoAtlas</span>
+  <div class="wrap">
+    <span>© <span id="y">2026</span> Zane Zhang</span>
+    <span>地图数据 DataV.GeoAtlas · Albers 25°N/47°N · WGS 84</span>
   </div>
 </footer>
 
 <script>
-/* ---------- clock ---------- */
-const clock = document.getElementById('clock-chip');
-function tick() {
-  const now = new Date();
-  clock.textContent = now.toLocaleTimeString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false });
+/* nav hairline on scroll */
+const hdr = document.getElementById('hdr');
+const themed = [...document.querySelectorAll('[data-nav]')];
+function onScroll() {
+  const probe = 24;
+  let dark = false;
+  for (const s of themed) {
+    const r = s.getBoundingClientRect();
+    if (r.top <= probe && r.bottom > probe) { dark = s.dataset.nav === 'dark'; break; }
+  }
+  hdr.classList.toggle('on-dark', dark);
+  hdr.classList.toggle('scrolled', scrollY > 8 && !dark);
 }
-tick(); setInterval(tick, 1000);
-document.getElementById('year').textContent = new Date().getFullYear();
+addEventListener('scroll', onScroll, { passive: true });
+onScroll();
 
-/* ---------- live weather (Open-Meteo, no key) ---------- */
+/* year */
+document.getElementById('y').textContent = new Date().getFullYear();
+
+/* live weather */
 const WMO = { 0:'晴', 1:'晴间多云', 2:'多云', 3:'阴', 45:'雾', 48:'雾凇', 51:'毛毛雨', 53:'小雨', 55:'中雨',
   61:'小雨', 63:'中雨', 65:'大雨', 71:'小雪', 73:'中雪', 75:'大雪', 80:'阵雨', 81:'阵雨', 82:'强阵雨',
   95:'雷阵雨', 96:'雷阵雨伴冰雹', 99:'强雷暴' };
+const wx = document.getElementById('wx');
 fetch('https://api.open-meteo.com/v1/forecast?latitude=31.165&longitude=121.405&current=temperature_2m,weather_code&timezone=Asia%2FShanghai')
   .then(r => r.json())
   .then(d => {
-    const t = d.current.temperature_2m, c = WMO[d.current.weather_code] || '—';
-    document.getElementById('weather-chip').innerHTML = '徐汇 <b>' + t.toFixed(1) + '°C</b> · ' + c;
+    wx.textContent = '实时 ' + d.current.temperature_2m.toFixed(1) + '°C · ' + (WMO[d.current.weather_code] || '—');
   })
-  .catch(() => { document.getElementById('weather-chip').textContent = '徐汇 · 天气不可用'; });
+  .catch(() => { wx.textContent = '天气暂不可用'; });
 
-/* ---------- map: inverse Albers readout ---------- */
-const PROJ = { phi1: 25, phi2: 47, phi0: 35, lam0: 105 };
-const VB = { w: 980, h: 456 };
-const PANELS = [
-  { key:'cn',  label:'中国',   x:26,  y:54, w:330, h:340, ox:41.0,      oy:137.0714, scale:285.077806,  mnx:-0.5383808558402707, mxy:0.38373620975974676 },
-  { key:'yrd', label:'长三角', x:372, y:54, w:258, h:340, ox:387.0,     oy:118.3591, scale:2870.566121, mnx:0.18093525464110483, mxy:-0.013624156082934213 },
-  { key:'sh',  label:'上海',   x:646, y:54, w:308, h:340, ox:665.7932,  oy:69.0,     scale:12911.618293,mnx:0.2301172441904536,  mxy:-0.03413581455131931 }
-];
-
-const P = (() => {
-  const r = d => d * Math.PI / 180;
-  const p1 = r(PROJ.phi1), p2 = r(PROJ.phi2), p0 = r(PROJ.phi0);
-  const n = (Math.sin(p1) + Math.sin(p2)) / 2;
-  const C = Math.cos(p1) ** 2 + 2 * n * Math.sin(p1);
-  const rho0 = Math.sqrt(C - 2 * n * Math.sin(p0)) / n;
-  return { n, C, rho0 };
-})();
-
-function inverseAlbers(x, y) {
-  const dy = P.rho0 - y;
-  const rho = Math.sign(P.n) * Math.hypot(x, dy);
-  const theta = Math.atan2(x, dy);
-  const lon = PROJ.lam0 + (theta / P.n) * 180 / Math.PI;
-  const s = (P.C - (rho * P.n) ** 2) / (2 * P.n);
-  const lat = Math.asin(Math.max(-1, Math.min(1, s))) * 180 / Math.PI;
-  return [lon, lat];
-}
-
-const stage = document.getElementById('mapstage');
-const img = document.getElementById('atlas');
-const cross = document.getElementById('crosshair');
-const readout = document.getElementById('readout');
-
-function vbPoint(evt) {
-  const r = img.getBoundingClientRect();
-  return [ (evt.clientX - r.left) / r.width * VB.w, (evt.clientY - r.top) / r.height * VB.h ];
-}
-
-stage.addEventListener('mousemove', evt => {
-  const [vx, vy] = vbPoint(evt);
-  const panel = PANELS.find(p => vx >= p.x && vx <= p.x + p.w && vy >= p.y && vy <= p.y + p.h);
-  const r = stage.getBoundingClientRect();
-  cross.style.left = (evt.clientX - r.left) + 'px';
-  cross.style.top = (evt.clientY - r.top) + 'px';
-
-  if (!panel) {
-    readout.innerHTML = '把鼠标移到三幅图上的任意一幅<br>hover one of the three panels';
-    return;
-  }
-  const ux = (vx - panel.ox) / panel.scale + panel.mnx;
-  const uy = panel.mxy - (vy - panel.oy) / panel.scale;
-  const [lon, lat] = inverseAlbers(ux, uy);
-  if (!isFinite(lon) || !isFinite(lat) || Math.abs(lat) > 90) {
-    readout.innerHTML = '图幅外 · outside the panel';
-    return;
-  }
-  readout.innerHTML = panel.label + ' / ' + panel.key.toUpperCase() +
-    '<br><b>' + Math.abs(lat).toFixed(4) + '°' + (lat >= 0 ? 'N' : 'S') + '</b> ' +
-    Math.abs(lon).toFixed(4) + '°' + (lon >= 0 ? 'E' : 'W');
+/* reveal on scroll */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.style.transitionDelay = (i % 3) * 70 + 'ms';
+  io.observe(el);
 });
 
-stage.addEventListener('mouseleave', () => {
-  readout.innerHTML = '把鼠标移到图上<br>Move the cursor over the map';
-});
+/* staged map: follow the active step */
+const steps = [...document.querySelectorAll('#steps .step')];
+const shots = [...document.querySelectorAll('#stage img')];
+const cap = document.getElementById('stage-cap');
+const labels = ['中国', '长江三角洲', '徐汇'];
+
+const stepIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const i = +e.target.dataset.i;
+    steps.forEach((s, k) => s.classList.toggle('on', k === i));
+    shots.forEach((s, k) => s.classList.toggle('on', k === i));
+    cap.textContent = labels[i];
+  });
+}, { rootMargin: '-46% 0px -46% 0px', threshold: 0 });
+steps.forEach(s => stepIO.observe(s));
 </script>
 </body>
 </html>
