@@ -8,16 +8,17 @@
 ---
 kind: 软著
 title: 软件全称（与证书一致）
-number: 2026SR0123456          # 登记号
-issued: 2026-09-18             # 登记日期
+number: 2026SR1091537          # 登记号
+certificate: 软著登字第 18305818 号   # 证书号，可省
+issued: 2026-09-18             # 登记日期，证书上有就填，没有就不写
 holder: 张永轩                  # 著作权人（证书上的名字）
-version: V1.0                  # 版本号，可省
-related: wuzhen-twin-gate      # 可选：关联的项目 id（对应 src/content/projects 下的文件名）
+version: 1.0                 # 版本号要加引号，否则 YAML 会当成数字
+related: wuzhen-twin-gate      # 可选：关联的项目 id
 link: https://...              # 可选：证书或软著查询页
-summary: 一句话说明这个软件解决什么问题。
 order: 1
 ---
 
+summary 可省——证书类条目一般只列名称与登记信息，不写说明。
 （正文可省。如果要写，就写软件做了什么、技术栈、与哪个研究对应。）
 ```
 
