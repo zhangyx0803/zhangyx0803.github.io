@@ -34,7 +34,7 @@ GitHub Pages 自动构建：推送到 `main` 分支即可，无需 Actions。
 | 坐标、天气位置 | `.chip` 与脚本里的 `fetch(...latitude=31.165&longitude=121.405...)` |
 | **研究线（时间线）** | `<section id="log">` 里的 `<ol class="tl">`，一条 `<li>` 就是一条记录 |
 | **未来计划（事件链）** | 同段落里的 `<div class="chain">`，一个 `.step` 是一个节点 |
-| 研究项目卡片 | `<section id="research">` 里的三个 `<article class="card">` |
+| 研究项目卡片 | `<section id="research">` 里的两个 `<article class="card">` |
 | 联系方式 | `<section id="contact">` |
 | 配色 | `:root` 里的 CSS 变量 |
 
