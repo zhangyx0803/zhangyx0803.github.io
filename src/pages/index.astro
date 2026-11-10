@@ -2,15 +2,21 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import mapSvg from '../assets/map-scene.svg?raw';
+import { log, plan } from '../data/log';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const notes = (await getCollection('notes'))
   .filter((n) => !n.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 4);
+const awards = (await getCollection('achievements'))
+  .filter((a) => !a.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
 
 const fmt = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+const days = log.slice().reverse();
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -27,7 +33,7 @@ const jsonLd = {
 
 <Base
   title="Zane Zhang · 地理信息科学"
-  description="Zane Zhang，地理信息科学。研究城市冷岛网络的跨期演变、遥感反演与专题制图；记录方法、踩坑与复现步骤。"
+  description="Zane Zhang，地理信息科学。研究城市冷岛网络的跨期演变、遥感反演与专题制图；逐日记录进度、数据来源与复现步骤。"
   jsonLd={jsonLd}
 >
   <section class="hero" data-nav="light">
@@ -40,18 +46,12 @@ const jsonLd = {
       <p class="meta">
         <b>31.1650°N&nbsp;&nbsp;121.4050°E</b> · 上海 · 徐汇 · <span id="weather">正在读取天气…</span>
       </p>
-      <p class="links-row">
-        <a href="/projects/">研究</a>
-        <a href="/notes/">笔记</a>
-        <a href="#contact">联系</a>
-      </p>
     </div>
   </section>
 
   <section class="section atlas" id="map">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Figure 1</span>
         <h2 class="mask"><span>从国土，到一条街。</span></h2>
         <p data-reveal>同一套 Albers 投影，一张图，三个尺度。往下滚，镜头连续推近。</p>
       </div>
@@ -105,7 +105,6 @@ const jsonLd = {
   <section class="section section--dark" id="work" data-nav="dark">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Research</span>
         <h2 class="mask"><span>在做的两件事。</span></h2>
         <p data-reveal>代码与项目说明公开；论文、图件与原始数据不公开，需要数据可以邮件索取。</p>
       </div>
@@ -127,10 +126,41 @@ const jsonLd = {
     </div>
   </section>
 
+  {awards.length > 0 && (
+    <section class="section" id="awards">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="mask"><span>成果。</span></h2>
+          <p data-reveal>软件著作权、论文与竞赛。登记号与登记日期一并在列。</p>
+        </div>
+        {awards.map((a, i) => (
+          <article class="award" data-reveal style={`--d:${i * 60}ms`}>
+            <div class="kind">{a.data.kind}</div>
+            <div>
+              <h3>{a.data.title}</h3>
+              <p class="award-meta">
+                {a.data.number && <>登记号 {a.data.number}</>}
+                {a.data.number && (a.data.issued || a.data.holder) && ' · '}
+                {a.data.issued && <>{fmt(a.data.issued)} 登记</>}
+                {a.data.issued && a.data.holder && ' · '}
+                {a.data.holder}
+                {a.data.version && <> · {a.data.version}</>}
+              </p>
+              <p>{a.data.summary}</p>
+              <div class="links">
+                {a.data.related && <a href={`/projects/${a.data.related}/`}>关联项目 →</a>}
+                {a.data.link && <a href={a.data.link}>查看 →</a>}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
   <section class="section" id="notes">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Notes</span>
         <h2 class="mask"><span>写下来的方法。</span></h2>
         <p data-reveal>投影与比例尺、反演里的坑、排版细节。都是踩过之后记的。</p>
       </div>
@@ -152,51 +182,36 @@ const jsonLd = {
   <section class="section" id="log">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Timeline</span>
-        <h2 class="mask"><span>进度。</span></h2>
-        <p data-reveal>做完一部分记一条；没做完的挂在下面。</p>
+        <h2 class="mask"><span>逐日进度。</span></h2>
+        <p data-reveal>每天做了什么、现在到哪一步、下一步是什么。日期取自文件与提交记录。</p>
       </div>
 
-      <div class="entry" data-reveal>
-        <div class="when">2026.10.15</div>
-        <div>
-          <h3>乌镇双栅：数据与方法</h3>
-          <p class="what">先把能拿到的整理清楚，再决定分析什么。</p>
-          <ul>
-            <li class="done">景区经营数据 2016–2024 汇总</li>
-            <li class="done">方法学检索报告：两栅该怎么比</li>
-            <li class="done">13 个分析脚本：采集 → 清洗 → 主题 → 情感 → 建模</li>
-            <li class="todo">点评数据采集与论文</li>
-          </ul>
-        </div>
+      <div class="days">
+        {days.map((e, i) => (
+          <div class="day" data-reveal style={`--d:${(i % 4) * 40}ms`}>
+            <time class="d-date" datetime={e.date}>{e.date.replace(/-/g, '.')}</time>
+            <div class="d-body">
+              <div class="d-head">
+                <h3>{e.title}</h3>
+                <span class={e.status === '完成' ? 'st is-done' : 'st is-doing'}>{e.status}</span>
+              </div>
+              <ul class="d-done">
+                {e.done.map((d) => <li>{d}</li>)}
+              </ul>
+              {e.next && <p class="d-next">下一步：{e.next}</p>}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div class="entry" data-reveal>
-        <div class="when">2026.10.20</div>
-        <div>
-          <h3>冷岛网络：开题</h3>
-          <p class="what">把问题、数据与方法一次定死，后面只管填数。</p>
-          <ul>
-            <li class="done">研究问题：十年怎么变、变化来自哪里</li>
-            <li class="done">数据清单：Landsat 8/9 三期、CLCD、行政边界</li>
-            <li class="done">11 步方法链与参数：MSPA / MCR / 电路 / 2×2 分解 / 熵权</li>
-            <li class="done">12 步操作手册，含实测报错与修正</li>
-            <li class="todo">影像入库与地表温度反演（进行中）</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="entry is-now" data-reveal>
-        <div class="when">现在</div>
-        <div>
-          <h3>冷岛网络：遥感反演</h3>
-          <p class="what">先把「冷源在哪」落成一张可靠的栅格，再谈网络。</p>
-          <ul>
-            <li class="todo">地表温度、NDVI、NDWI 三期反演</li>
-            <li class="todo">MSPA 核心区与源地识别</li>
-            <li class="todo">阻力面、廊道、瓶颈与归因</li>
-          </ul>
-        </div>
+      <div class="plan" data-reveal>
+        <h3>后续安排</h3>
+        {plan.map((p) => (
+          <div class="plan-row">
+            <span class="p-when">{p.when}</span>
+            <span>{p.what}</span>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -204,7 +219,6 @@ const jsonLd = {
   <section class="section" id="contact">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Contact</span>
         <h2 class="mask"><span>写信给我。</span></h2>
       </div>
       <a class="contact-big" href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>
@@ -216,91 +230,64 @@ const jsonLd = {
   </section>
 
   <style>
+    /* atlas */
     .atlas { padding-bottom: 48px; }
     .atlas-grid {
-      display: grid;
-      grid-template-columns: 1.16fr .84fr;
-      gap: 64px;
-      align-items: start;
-      margin-top: 8px;
+      display: grid; grid-template-columns: 1.16fr .84fr; gap: 64px;
+      align-items: start; margin-top: 8px;
     }
     .atlas-stage {
-      position: sticky;
-      top: 84px;
-      aspect-ratio: 1000 / 620;
-      overflow: hidden;
-      background: var(--paper);
+      position: sticky; top: 84px; aspect-ratio: 1000 / 620;
+      overflow: hidden; background: var(--paper);
       border: 1px solid var(--rule-soft);
     }
     .scene {
-      position: absolute;
-      top: 0; left: 0;
+      position: absolute; top: 0; left: 0;
       width: 1000px; height: 620px;
       transform-origin: 0 0;
       transition: transform 1.35s cubic-bezier(.22, 1, .36, 1);
     }
-    .scene > svg {
-      display: block;
-      width: 1000px; height: 620px;
-      max-width: none;
-    }
+    .scene > svg { display: block; width: 1000px; height: 620px; max-width: none; }
     .stage-static .scene { transition: none; }
 
     .atlas-labels { position: absolute; inset: 0; pointer-events: none; }
     .atlas-labels .lbl {
-      position: absolute;
-      font-family: var(--sans);
-      font-size: 11.5px;
-      letter-spacing: .02em;
-      color: var(--ink);
-      background: rgba(250, 248, 245, .86);
-      padding: 1px 5px;
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity .5s;
+      position: absolute; font-family: var(--sans); font-size: 11.5px;
+      letter-spacing: .02em; color: var(--ink);
+      background: rgba(250, 248, 245, .88); padding: 1px 5px;
+      white-space: nowrap; opacity: 0; transition: opacity .5s;
       transform: translate(0, -50%);
     }
     .atlas-labels .lbl[data-anchor="end"] { transform: translate(-100%, -50%); }
     .atlas-labels .mk {
-      position: absolute;
-      width: 5px; height: 5px;
-      margin: -2.5px 0 0 -2.5px;
-      border-radius: 50%;
-      background: var(--terracotta);
-      opacity: 0;
-      transition: opacity .5s;
+      position: absolute; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px;
+      border-radius: 50%; background: var(--terracotta); opacity: 0; transition: opacity .5s;
     }
     .atlas-stage[data-step="0"] .lv0 { opacity: 1; }
     .atlas-stage[data-step="1"] .lv1 { opacity: 1; }
     .atlas-stage[data-step="2"] .lv2 { opacity: 1; }
 
     .atlas-scale {
-      position: absolute;
-      left: 12px; bottom: 12px;
+      position: absolute; left: 12px; bottom: 12px;
       display: flex; align-items: center; gap: 8px;
       font-family: var(--mono); font-size: 10.5px; color: var(--muted);
     }
     .atlas-scale .bar {
-      display: block; height: 5px;
-      border: 1px solid var(--muted); border-top: 0;
+      display: block; height: 5px; border: 1px solid var(--muted); border-top: 0;
       transition: width .5s;
     }
 
     .atlas-steps .step {
-      min-height: 62vh;
-      display: flex; flex-direction: column; justify-content: center;
+      min-height: 62vh; display: flex; flex-direction: column; justify-content: center;
       padding: 8px 0;
     }
     .atlas-steps .n {
-      font-family: var(--mono); font-size: 11px;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--muted); transition: color .5s;
+      font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted); transition: color .5s;
     }
     .atlas-steps h3 {
-      margin: 10px 0 8px;
-      font-size: clamp(21px, 2.2vw, 27px);
-      color: #b7aea0;
-      transition: color .5s;
+      margin: 10px 0 8px; font-size: clamp(21px, 2.2vw, 27px);
+      color: #b7aea0; transition: color .5s;
     }
     .atlas-steps p { margin: 0; color: #a89e90; max-width: 26em; transition: color .5s; }
     .atlas-steps .step.is-on .n { color: var(--terracotta); }
@@ -312,6 +299,73 @@ const jsonLd = {
       .atlas-stage { position: sticky; top: 62px; z-index: 5; margin-bottom: 12px; }
       .atlas-steps .step { min-height: 54vh; }
       .atlas-steps h3 { font-size: 22px; }
+    }
+
+    /* awards */
+    .award {
+      display: grid; grid-template-columns: 64px 1fr; gap: 28px;
+      padding: 22px 0; border-top: 1px solid var(--rule-soft);
+    }
+    .award:first-of-type { border-top: 1px solid var(--rule); }
+    .award .kind {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+      color: var(--terracotta); padding-top: 5px;
+    }
+    .award h3 { margin: 0 0 4px; font-size: 20px; }
+    .award .award-meta {
+      margin: 0 0 8px; font-family: var(--mono); font-size: 12.5px;
+      color: var(--muted); letter-spacing: .02em;
+    }
+    .award p { margin: 0 0 8px; font-size: 15.5px; }
+    .award .links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
+    @media (max-width: 720px) { .award { grid-template-columns: 1fr; gap: 6px; } .award .kind { padding-top: 0; } }
+
+    /* daily log */
+    .days { border-top: 1px solid var(--rule); }
+    .day {
+      display: grid; grid-template-columns: 132px 1fr; gap: 28px;
+      padding: 18px 0; border-bottom: 1px solid var(--rule-soft);
+    }
+    .d-date {
+      font-family: var(--mono); font-size: 12px; color: var(--muted);
+      letter-spacing: .03em; padding-top: 4px; font-variant-numeric: tabular-nums;
+    }
+    .d-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .d-head h3 { margin: 0; font-size: 18px; letter-spacing: -0.01em; }
+    .st {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+      padding: 2px 6px; border: 1px solid var(--rule); border-radius: 2px;
+      color: var(--muted);
+    }
+    .st.is-doing { color: var(--terracotta); border-color: rgba(180, 85, 58, .45); }
+    .d-done { list-style: none; margin: 8px 0 0; padding: 0; font-size: 15px; color: #3d372f; }
+    .d-done li { position: relative; padding-left: 14px; margin: 3px 0; }
+    .d-done li::before {
+      content: "·"; position: absolute; left: 2px; top: -1px; color: var(--terracotta);
+    }
+    .d-next {
+      margin: 8px 0 0; font-size: 14.5px; color: var(--muted);
+      padding-left: 14px; border-left: 2px solid var(--rule);
+    }
+
+    .plan { margin-top: 44px; }
+    .plan h3 {
+      margin: 0 0 12px; font-size: 17px; letter-spacing: -0.01em;
+      color: var(--navy);
+    }
+    .plan-row {
+      display: grid; grid-template-columns: 96px 1fr; gap: 20px;
+      padding: 9px 0; border-top: 1px solid var(--rule-soft);
+      font-size: 15px;
+    }
+    .plan-row:last-child { border-bottom: 1px solid var(--rule-soft); }
+    .p-when {
+      font-family: var(--mono); font-size: 12px; color: var(--terracotta);
+      letter-spacing: .03em; padding-top: 2px;
+    }
+    @media (max-width: 720px) {
+      .day { grid-template-columns: 1fr; gap: 4px; }
+      .plan-row { grid-template-columns: 76px 1fr; gap: 12px; }
     }
   </style>
 
@@ -353,7 +407,6 @@ const jsonLd = {
       const vw = stage.clientWidth;
       const vh = stage.clientHeight;
       if (!vw || !vh) return;
-      // expand the target rect to the stage aspect so nothing is cropped
       const stageAspect = vw / vh;
       let rw = p.w, rh = p.h;
       if (rw / rh < stageAspect) rw = rh * stageAspect;
@@ -377,10 +430,8 @@ const jsonLd = {
 
       for (const el of labels) {
         const pt = POINTS[el.dataset.p];
-        const x = pt[0] * s + tx;
-        const y = pt[1] * s + ty;
-        el.style.left = x + 'px';
-        el.style.top = y + 'px';
+        el.style.left = (pt[0] * s + tx).toFixed(1) + 'px';
+        el.style.top = (pt[1] * s + ty).toFixed(1) + 'px';
         const dx = Number(el.dataset.dx || 0);
         const dy = Number(el.dataset.dy || 0);
         if (dx) el.style.marginLeft = dx + 'px';

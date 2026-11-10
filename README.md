@@ -82,6 +82,37 @@ order: 3
 
 之后每次发文章，Search Console 会自己来抓；也可以在 Bing Webmaster Tools 用同一份 sitemap 再提交一次。
 
+## 逐日进度
+
+src/data/log.ts 是一个数组，一天一条：
+
+`	s
+{ date: '2026-11-11', title: '冷岛网络：遥感反演',
+  done: ['影像与土地覆被入库', 'LST/NDVI/NDWI 三期反演'],
+  status: '进行中', next: '反演结果核验' }
+`
+
+plan 数组放后续安排（按月）。首页会按日期倒序渲染，完成状态显示为方框标签。
+
+## 加成果（软著 / 论文 / 竞赛）
+
+src/content/achievements/ 放一个 .md，字段见 docs/achievements-template.md：
+
+`md
+---
+kind: 软著
+title: 软件全称
+number: 2026SR0123456
+issued: 2026-09-18
+holder: 张永轩
+summary: 一句话说明
+order: 1
+---
+`
+
+有内容时首页才会出现「成果」一节，没有就整节隐藏。
+**不要放证书原图**（上面有身份证号），登记号 + 查询链接足够。
+
 ## 设计说明
 
 - 黑白段落交替，系统字体，字号用 `clamp()` 自适应。
