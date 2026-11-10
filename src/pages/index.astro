@@ -1,18 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { tracks } from '../data/log';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const today = new Date();
-for (const t of tracks) {
-  for (const e of t.entries) {
-    if (new Date(e.date) > today) {
-      throw new Error(`逐日进度里有未来日期：${e.date}（${e.title}）。请改成实际发生日期。`);
-    }
-  }
-}
-
 const awards = (await getCollection('achievements'))
   .filter((a) => !a.data.draft)
   .sort((a, b) => a.data.order - b.data.order);
@@ -25,272 +15,138 @@ const jsonLd = {
   url: 'https://zhangyx0803.github.io/',
   email: 'mailto:zhangyx0803@petalmail.com',
   jobTitle: '地理信息科学',
-  knowsAbout: ['GIS', 'Remote Sensing', 'Spatial Analysis', 'Urban Heat Island', 'Cartography'],
+  affiliation: {
+    '@type': 'CollegeOrUniversity',
+    name: '上海师范大学',
+  },
+  knowsAbout: ['GIS', 'Remote Sensing', 'Spatial Analysis', 'Urban Heat Island'],
   sameAs: ['https://github.com/zhangyx0803'],
 };
 ---
 
 <Base
   title="Zane Zhang · 地理信息科学"
-  description="Zane Zhang，地理信息科学。研究城市冷岛网络的跨期演变、遥感反演与专题制图。"
+  description="Zane Zhang，上海师范大学地理信息科学本科。研究城市冷岛网络的跨期演变：遥感反演、MSPA、最小累积阻力与电路理论。"
+  jsonLd={jsonLd}
 >
-  <section class="hero" data-nav="light">
-    <div class="wrap">
-      <span class="hand t-zh">你好</span>
-      <span class="hand t-en">Hello</span>
-      <h1>Zane Zhang</h1>
-      <p class="lede t-zh">
-        地理信息科学。研究城市冷岛网络的跨期演变，也整理遥感反演与专题制图里那些容易写错的地方。
-      </p>
-      <p class="lede t-en">
-        Geographic information science. I study how Shanghai's cool-island network changed over a decade,
-        and write down the remote-sensing and cartography details that are easy to get wrong.
-      </p>
-      <p class="meta">
-        <b>31.1650°N&nbsp;&nbsp;121.4050°E</b> ·
-        <span class="t-zh">上海 · 徐汇 · </span><span class="t-en">Shanghai · Xuhui · </span><span id="weather">…</span>
-      </p>
+  <section class="intro">
+    <div class="wrap intro-grid">
+      <div>
+        <h1>
+          Zane Zhang <span class="cn">张永轩</span>
+        </h1>
+        <p class="affil">
+          <span class="t-zh">上海师范大学 · 〔学院待补〕 · 地理信息科学 · 本科在读</span>
+          <span class="t-en">Shanghai Normal University · 〔college TBC〕 · Geographic Information Science · undergraduate</span>
+        </p>
+        <p class="statement">
+          <span class="t-zh">
+            研究城市冷岛网络的跨期演变：用三期遥感影像识别冷源与源地，构建廊道网络，
+            再分解变化到底来自源地格局还是阻力面。也写遥感反演与专题制图里容易写错的地方。
+          </span>
+          <span class="t-en">
+            I study how Shanghai's cool-island network changed over a decade: three periods of satellite
+            imagery, a corridor network built from sources and resistance surfaces, then a decomposition
+            of what actually drove the change.
+          </span>
+        </p>
+        <p class="links-row">
+          <a href="mailto:zhangyx0803@petalmail.com">Email</a>
+          <a href="https://github.com/zhangyx0803">GitHub</a>
+          <a href="/cv/">CV</a>
+          <span class="t-zh">· 更新于 2026.11</span><span class="t-en">· updated 2026.11</span>
+        </p>
+      </div>
+      <div class="portrait">
+        <span class="t-zh">照片<br />待补</span>
+        <span class="t-en">photo<br />TBC</span>
+      </div>
     </div>
   </section>
 
-  <section class="section section--dark" id="work" data-nav="dark">
+  <section class="section" id="research">
     <div class="wrap">
-      <h2 class="mask"><span class="t-zh">研究</span><span class="t-en">Research</span></h2>
-      <p class="section-lede t-zh">代码与项目说明公开；论文、图件与原始数据不公开，需要数据可以邮件索取。</p>
-      <p class="section-lede t-en">Code and project notes are public. Papers, figures and raw data are not; write to me for the parts you need.</p>
+      <h2><span class="t-zh">研究</span><span class="t-en">Research</span></h2>
+      <p class="lede">
+        <span class="t-zh">两个项目，一个进行中，一个已结题。代码与复现步骤公开，原始数据按需提供。</span>
+        <span class="t-en">Two projects, one ongoing. Code and reproduction steps are public; raw data on request.</span>
+      </p>
 
       {projects.map((p, i) => (
-        <article class="pub" data-reveal style={`--d:${i * 60}ms`}>
-          <div class="year">{p.data.period.split('—')[0].trim().slice(0, 7)}</div>
+        <div class="row" data-reveal>
+          <div class="when">{p.data.period.split('—')[0].trim()}</div>
           <div>
             <h3>
               <a href={`/projects/${p.id}/`}>
                 <span class="t-zh">{p.data.title}</span><span class="t-en">{p.data.titleEn ?? p.data.title}</span>
               </a>
             </h3>
-            <p class="meta-line">
+            <p class="sub">
               <span class="t-zh">{p.data.status}</span><span class="t-en">{p.data.statusEn ?? p.data.status}</span>
               {p.data.methods.length ? ` · ${p.data.methods.slice(0, 4).join(' · ')}` : ''}
             </p>
-            <p class="t-zh">{p.data.summary}</p>
-            <p class="t-en">{p.data.summaryEn ?? p.data.summary}</p>
-            <div class="links">
+            <p class="desc">
+              <span class="t-zh">{p.data.summary}</span><span class="t-en">{p.data.summaryEn ?? p.data.summary}</span>
+            </p>
+            <p class="links">
               <a href={`/projects/${p.id}/`}>
-                <span class="t-zh">数据与复现 →</span><span class="t-en">Data and reproduction →</span>
+                <span class="t-zh">数据与复现</span><span class="t-en">Data &amp; reproduction</span>
               </a>
               {p.data.repo && <a href={p.data.repo}>GitHub</a>}
-            </div>
+            </p>
           </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  {awards.length > 0 && (
-    <section class="section" id="awards">
-      <div class="wrap">
-        <h2 class="mask"><span class="t-zh">成果</span><span class="t-en">Output</span></h2>
-        {awards.map((a, i) => {
-          const metaZh = [
-            a.data.number && `登记号 ${a.data.number}`,
-            a.data.certificate,
-          ].filter(Boolean).join(' · ');
-          const metaEn = [
-            a.data.number && `Reg. ${a.data.number}`,
-            a.data.certificateEn ?? a.data.certificate,
-          ].filter(Boolean).join(' · ');
-          return (
-            <article class="award" data-reveal style={`--d:${i * 60}ms`}>
-              <div class="kind">
-                <span class="t-zh">{a.data.kind}</span><span class="t-en">{a.data.kindEn ?? a.data.kind}</span>
-              </div>
-              <div>
-                <h3>
-                  <span class="t-zh">{a.data.title}</span><span class="t-en">{a.data.titleEn ?? a.data.title}</span>
-                </h3>
-                <p class="award-meta t-zh">{metaZh}</p>
-                <p class="award-meta t-en">{metaEn}</p>
-                <div class="links">
-                  {a.data.related && (
-                    <a href={`/projects/${a.data.related}/`}>
-                      <span class="t-zh">关联项目 →</span><span class="t-en">Related project →</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  )}
-
-  <section class="section" id="log">
-    <div class="wrap">
-      <h2 class="mask"><span class="t-zh">逐日进度</span><span class="t-en">Daily log</span></h2>
-
-      {tracks.map((t, ti) => (
-        <div class="track" data-reveal style={`--d:${ti * 60}ms`}>
-          <div class="track-head">
-            <h3>
-              <span class="t-zh">{t.title}</span><span class="t-en">{t.titleEn}</span>
-            </h3>
-            <span class="track-meta">
-              <span class="t-zh">{t.entries.length} 条 · {t.status}</span>
-              <span class="t-en">{t.entries.length} entries · {t.statusEn}</span>
-            </span>
-          </div>
-
-          <div class="rail">
-            {t.entries.map((e) => (
-              <div class="node">
-                <time class="n-date" datetime={e.date}>{e.date.replace(/-/g, '.')}</time>
-                <div class="n-line">
-                  <span class={e.status === '完成' ? 'dot' : 'dot is-doing'}></span>
-                </div>
-                <div class="n-body">
-                  <h4>
-                    <span class="t-zh">{e.title}</span><span class="t-en">{e.titleEn}</span>
-                  </h4>
-                  <ul class="t-zh">{e.done.map((d) => <li>{d}</li>)}</ul>
-                  <ul class="t-en">{e.doneEn.map((d) => <li>{d}</li>)}</ul>
-                  {e.next && <p class="n-next t-zh">下一步：{e.next}</p>}
-                  {e.nextEn && <p class="n-next t-en">Next: {e.nextEn}</p>}
-                </div>
-              </div>
-            ))}
-            <span class="rail-fill" aria-hidden="true"></span>
-          </div>
-
-          {t.plan.length > 0 && (
-            <div class="plan">
-              <span class="plan-label">
-                <span class="t-zh">后续</span><span class="t-en">Next</span>
-              </span>
-              <div class="plan-items">
-                {t.plan.map((p) => (
-                  <span class="plan-item">
-                    <b>{p.when}</b>
-                    <span class="t-zh">{p.what}</span><span class="t-en">{p.whatEn}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       ))}
     </div>
   </section>
 
-  <section class="section" id="contact">
+  {awards.length > 0 && (
+    <section class="section" id="output">
+      <div class="wrap">
+        <h2><span class="t-zh">成果</span><span class="t-en">Output</span></h2>
+        <p class="lede">
+          <span class="t-zh">软件著作权。登记号与证书号可在版权保护中心查询。</span>
+          <span class="t-en">Registered software copyright; the registration number is verifiable.</span>
+        </p>
+
+        {awards.map((a, i) => (
+          <div class="row" data-reveal>
+            <div class="when">{a.data.issued ? String(a.data.issued.getFullYear()) : '2026'}</div>
+            <div>
+              <h3>
+                <span class="kind"><span class="t-zh">{a.data.kind}</span><span class="t-en">{a.data.kindEn ?? a.data.kind}</span></span>
+                <span class="t-zh">{a.data.title}</span><span class="t-en">{a.data.titleEn ?? a.data.title}</span>
+              </h3>
+              <p class="sub">
+                <span class="t-zh">
+                  {[a.data.number && `登记号 ${a.data.number}`, a.data.certificate].filter(Boolean).join(' · ')}
+                </span>
+                <span class="t-en">
+                  {[a.data.number && `Reg. ${a.data.number}`, a.data.certificateEn ?? a.data.certificate].filter(Boolean).join(' · ')}
+                </span>
+              </p>
+              <p class="links">
+                {a.data.related && (
+                  <a href={`/projects/${a.data.related}/`}>
+                    <span class="t-zh">关联项目</span><span class="t-en">Related project</span>
+                  </a>
+                )}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="contact" id="contact">
     <div class="wrap">
-      <h2 class="mask"><span class="t-zh">联系</span><span class="t-en">Contact</span></h2>
-      <a class="contact-big" href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>
-      <p style="margin-top:20px;font-family:var(--mono);font-size:12.5px;color:var(--muted)">
-        <a href="https://github.com/zhangyx0803">GitHub</a> ·
-        <a href="https://www.openstreetmap.org/?mlat=31.1650&mlon=121.4050#map=15/31.1650/121.4050">31.1650°N 121.4050°E</a>
+      <h2><span class="t-zh">联系</span><span class="t-en">Contact</span></h2>
+      <a class="mail" href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>
+      <p class="meta">
+        <span class="t-zh">31.1650°N 121.4050°E · 上海 · 徐汇</span>
+        <span class="t-en">31.1650°N 121.4050°E · Shanghai</span>
       </p>
     </div>
   </section>
-
-  <style>
-    .section-lede {
-      margin: 16px 0 34px; max-width: 40em;
-      font-size: 16.5px; color: var(--muted);
-    }
-    .section--dark .section-lede { color: rgba(246, 241, 232, .62); }
-
-    .award {
-      display: grid; grid-template-columns: 96px 1fr; gap: 28px;
-      padding: 22px 0; border-top: 1px solid var(--rule-soft); margin-top: 34px;
-    }
-    .award .kind {
-      font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
-      color: var(--terracotta); padding-top: 5px;
-    }
-    .award h3 { margin: 0 0 4px; font-size: 20px; }
-    .award .award-meta {
-      margin: 0; font-family: var(--mono); font-size: 12.5px;
-      color: var(--muted); letter-spacing: .02em;
-    }
-    .award .links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; margin-top: 10px; }
-    @media (max-width: 720px) {
-      .award { grid-template-columns: 1fr; gap: 6px; }
-      .award .kind { padding-top: 0; }
-    }
-
-    .track { margin-top: 44px; }
-    .track-head {
-      display: flex; align-items: baseline; gap: 14px;
-      padding-bottom: 10px; border-bottom: 1px solid var(--rule);
-    }
-    .track-head h3 { margin: 0; font-size: 20px; letter-spacing: -0.012em; }
-    .track-meta {
-      font-family: var(--mono); font-size: 11.5px; color: var(--muted); letter-spacing: .04em;
-    }
-
-    .rail {
-      display: flex; overflow-x: auto;
-      scroll-snap-type: x proximity;
-      padding: 24px 0 6px;
-      scrollbar-width: thin;
-      border-bottom: 1px solid var(--rule-soft);
-    }
-    .rail-fill {
-      flex: 1 0 80px; align-self: flex-start;
-      margin-top: 24px; border-top: 1px solid var(--rule);
-    }
-    .rail::-webkit-scrollbar { height: 6px; }
-    .rail::-webkit-scrollbar-thumb { background: var(--rule); }
-
-    .node {
-      flex: 0 0 268px; scroll-snap-align: start;
-      padding-right: 32px; position: relative;
-    }
-    .n-date {
-      display: block; font-family: var(--mono); font-size: 11.5px;
-      color: var(--muted); letter-spacing: .03em; font-variant-numeric: tabular-nums;
-    }
-    .n-line { position: relative; height: 0; border-top: 1px solid var(--rule); margin-top: 10px; }
-    .dot {
-      position: absolute; left: 0; top: -4px;
-      width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta);
-    }
-    .dot.is-doing { background: var(--paper); border: 1.5px solid var(--terracotta); }
-    .n-body { padding-top: 16px; }
-    .n-body h4 { margin: 0 0 7px; font-size: 16px; letter-spacing: -0.01em; line-height: 1.35; }
-    .n-body ul { margin: 0; padding: 0; list-style: none; font-size: 14px; color: #3d372f; }
-    .n-body li { position: relative; padding-left: 11px; margin: 3px 0; line-height: 1.55; }
-    .n-body li::before { content: "·"; position: absolute; left: 1px; color: var(--terracotta); }
-    .n-next {
-      margin: 9px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted);
-      padding-left: 11px; border-left: 2px solid var(--rule);
-    }
-
-    .plan { display: flex; gap: 16px; flex-wrap: wrap; align-items: baseline; margin-top: 16px; }
-    .plan-label {
-      font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--terracotta);
-    }
-    .plan-items { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 14px; color: var(--muted); }
-    .plan-item b {
-      color: var(--ink); font-weight: 500; margin-right: 7px;
-      font-family: var(--mono); font-size: 12px;
-    }
-
-    @media (max-width: 720px) {
-      .node { flex-basis: 236px; padding-right: 24px; }
-      .track-head h3 { font-size: 18px; }
-    }
-  </style>
-
-  <script>
-    const wx = document.getElementById('weather');
-    if (wx) {
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=31.165&longitude=121.405&current=temperature_2m&timezone=Asia%2FShanghai')
-        .then((r) => r.json())
-        .then((d) => { wx.textContent = `${d.current.temperature_2m.toFixed(1)}°C`; })
-        .catch(() => { wx.textContent = '—'; });
-    }
-  </script>
 </Base>

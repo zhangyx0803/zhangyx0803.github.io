@@ -48,3 +48,4 @@ about 8,205 km², projected to CGCS2000 / 3-degree Gauss-Krüger, central meridi
 Completed: problem definition, data inventory, method chain and parameters, a 12-step handbook.
 Ongoing: imagery ingestion and LST retrieval.
 Not started: patches, resistance surfaces, corridors, bottlenecks, attribution.
+Dated progress is listed at the bottom of this page.

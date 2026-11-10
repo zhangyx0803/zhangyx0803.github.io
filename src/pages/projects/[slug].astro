@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import { tracks } from '../../data/log';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -14,6 +15,8 @@ const enEntry = (await getCollection('projectsEn')).find((e) => e.id === entry.i
 const EnContent = enEntry ? (await render(enEntry)).Content : null;
 
 const { title, titleEn, subtitle, subtitleEn, period, status, statusEn, summary, methods, repo } = entry.data;
+
+const track = tracks.find((t) => t.id === entry.id);
 
 const relatedAwards = (await getCollection('achievements')).filter(
   (a) => !a.data.draft && a.data.related === entry.id
@@ -98,6 +101,39 @@ const jsonLd = {
         </section>
       )}
 
+      {track && track.entries.length > 0 && (
+        <section class="timeline">
+          <h2>
+            <span class="t-zh">进度</span><span class="t-en">Progress</span>
+          </h2>
+          {track.entries.map((e) => (
+            <div class="tl-row">
+              <time datetime={e.date}>{e.date.replace(/-/g, '.')}</time>
+              <div>
+                <h3>
+                  <span class="t-zh">{e.title}</span><span class="t-en">{e.titleEn}</span>
+                </h3>
+                <ul class="t-zh">{e.done.map((d) => <li>{d}</li>)}</ul>
+                <ul class="t-en">{e.doneEn.map((d) => <li>{d}</li>)}</ul>
+              </div>
+            </div>
+          ))}
+          {track.plan.length > 0 && (
+            <div class="tl-plan">
+              <span class="lbl"><span class="t-zh">后续</span><span class="t-en">Next</span></span>
+              <div>
+                {track.plan.map((p) => (
+                  <span class="item">
+                    <b>{p.when}</b>
+                    <span class="t-zh">{p.what}</span><span class="t-en">{p.whatEn}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
       <nav class="article-foot">
         <a href="/projects/">
           <span class="t-zh">← 返回研究</span><span class="t-en">← All research</span>
@@ -153,6 +189,44 @@ const jsonLd = {
     @media (max-width: 720px) {
       .ra { grid-template-columns: 1fr; gap: 4px; }
       .ra-kind { padding-top: 0; }
+    }
+
+    .timeline { margin-top: 56px; }
+    .timeline h2 {
+      margin: 0 0 10px; font-size: 12px; letter-spacing: .14em;
+      text-transform: uppercase; font-family: var(--mono); color: var(--muted);
+      border: 0; padding: 0;
+    }
+    .tl-row {
+      display: grid; grid-template-columns: 92px 1fr; gap: 24px;
+      padding: 12px 0; border-top: 1px solid var(--rule-soft);
+    }
+    .tl-row time {
+      font-family: var(--mono); font-size: 11.5px; color: var(--muted);
+      letter-spacing: .03em; padding-top: 3px;
+    }
+    .tl-row h3 { margin: 0 0 4px; font-size: 16px; }
+    .tl-row ul { margin: 0; padding: 0; list-style: none; font-size: 14.5px; color: #3d372f; }
+    .tl-row li { position: relative; padding-left: 11px; margin: 2px 0; }
+    .tl-row li::before { content: "·"; position: absolute; left: 1px; color: var(--terracotta); }
+
+    .tl-plan {
+      display: grid; grid-template-columns: 92px 1fr; gap: 24px;
+      padding: 12px 0; border-top: 1px solid var(--rule-soft);
+      border-bottom: 1px solid var(--rule-soft);
+      font-size: 14px; color: var(--muted);
+    }
+    .tl-plan .lbl {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--terracotta); padding-top: 2px;
+    }
+    .tl-plan .item { display: inline-block; margin: 0 18px 6px 0; }
+    .tl-plan b {
+      color: var(--ink); font-weight: 500; margin-right: 6px;
+      font-family: var(--mono); font-size: 11.5px;
+    }
+    @media (max-width: 640px) {
+      .tl-row, .tl-plan { grid-template-columns: 1fr; gap: 3px; }
     }
 
     .article-foot {

@@ -26,7 +26,7 @@ interface Track {
  */
 export const tracks: Track[] = [
   {
-    id: 'cool-island',
+    id: 'cool-island-network',
     title: '上海市冷岛网络',
     titleEn: 'Shanghai cool-island network',
     status: '进行中',
@@ -59,7 +59,7 @@ export const tracks: Track[] = [
     ],
   },
   {
-    id: 'wuzhen',
+    id: 'wuzhen-twin-gate',
     title: '乌镇双栅情感',
     titleEn: 'Wuzhen twin gates',
     status: '已结题',
