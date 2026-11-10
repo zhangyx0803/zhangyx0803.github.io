@@ -97,6 +97,39 @@
   button.copy { font: inherit; cursor: pointer; background: none; border: 1px solid var(--line);
     color: var(--dim); border-radius: 8px; padding: 4px 9px; }
   button.copy:hover { color: var(--acc); border-color: var(--acc2); }
+
+  /* ---- timeline & chain ---- */
+  .tl { position: relative; list-style: none; margin: 6px 0 0; padding: 0 0 0 28px; }
+  .tl::before { content: ""; position: absolute; left: 8px; top: 10px; bottom: 12px; width: 1px; background: var(--line); }
+  .tl li { position: relative; padding-bottom: 26px; }
+  .tl li:last-child { padding-bottom: 0; }
+  .tl li::before { content: ""; position: absolute; left: -28px; top: 4px; width: 9px; height: 9px;
+    border-radius: 50%; background: var(--acc); box-shadow: 0 0 0 4px color-mix(in srgb, var(--acc) 15%, transparent); }
+  .tl li.now::before { animation: ring 2.4s ease-out infinite; }
+  @keyframes ring {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--acc) 55%, transparent); }
+    70% { box-shadow: 0 0 0 12px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  .tl .when { font: 12px/1 var(--mono); color: var(--mute); letter-spacing: .06em; }
+  .tl .when em { font-style: normal; color: var(--acc); }
+  .tl h3 { margin: 7px 0 4px; font-size: 16.5px; }
+  .tl p { margin: 0; color: var(--dim); font-size: 14.5px; max-width: 70ch; }
+  .tl .tag { display: inline-block; margin-top: 9px; padding: 4px 9px; border: 1px solid var(--line);
+    border-radius: 999px; font: 11px/1 var(--mono); color: var(--mute); }
+
+  .subhead { margin: 44px 0 2px; font: 12px/1 var(--mono); letter-spacing: .18em; color: var(--mute); text-transform: uppercase; }
+  .chain { display: flex; padding: 24px 2px 8px; overflow-x: auto; }
+  .chain .step { flex: 1 0 200px; position: relative; padding-right: 18px; }
+  .chain .step::before { content: ""; position: absolute; left: 0; top: 2px; width: 11px; height: 11px;
+    border-radius: 50%; border: 1.6px solid var(--acc2); background: var(--bg); }
+  .chain .step::after { content: ""; position: absolute; left: 13px; right: 6px; top: 7px; height: 1px;
+    background: repeating-linear-gradient(to right, var(--line) 0 5px, transparent 5px 10px); }
+  .chain .step:last-child::after { display: none; }
+  .chain .num { display: block; padding-left: 22px; font: 11px/1 var(--mono); color: var(--acc2); letter-spacing: .1em; }
+  .chain b { display: block; padding-left: 22px; margin-top: 7px; font-size: 14.5px; }
+  .chain span.d { display: block; padding-left: 22px; margin-top: 5px; color: var(--dim); font-size: 13px; line-height: 1.5; }
+
 </style>
 </head>
 <body>
@@ -106,6 +139,7 @@
     <a class="brand" href="#top">ZANE<span>·</span>ZHANG</a>
     <div class="links">
       <a href="#map">Map</a>
+      <a href="#log">Log</a>
       <a href="#research">Research</a>
       <a href="#toolkit">Toolkit</a>
       <a href="#contact">Contact</a>
@@ -144,6 +178,85 @@
       </div>
     </div>
   </div>
+
+  <section id="log">
+    <div class="wrap">
+      <h2>Log / 研究线</h2>
+      <p>已经做过的、正在做的，以及接下来几步。做完一步就把状态往前挪一格。</p>
+
+      <ol class="tl">
+        <li>
+          <span class="when">2026.10.01</span>
+          <h3>世界气候类型分布图集</h3>
+          <p>13 个气候类型，一类一张世界地图。后期从「整国染色」改成「画出气候区本身」，
+             国界只留作上下文——同一套配色与字号阶梯，13 张可以并排比较。</p>
+          <span class="tag">专题制图 · Pillow</span>
+        </li>
+
+        <li>
+          <span class="when">2026.10.15</span>
+          <h3>乌镇双栅：把一条分析流程搭起来</h3>
+          <p>从点评与 POI 出发，把「采集 → 清洗 → 地点归属 → 主题分类 → 情感 → 建模」拆成 13 个可单独运行的步骤，
+             规则分类留作可解释基线，模型用来接住长尾表达。</p>
+          <span class="tag">NLP × 空间</span>
+        </li>
+
+        <li>
+          <span class="when">2026.10.20</span>
+          <h3>上海市冷岛网络：开题</h3>
+          <p>定下骨架：三期影像、三套阻力面、三类瓶颈指标，再用 2×2 析因分解把网络的变化拆成
+             「源地效应 / 阻力效应 / 交互项」。想回答的是十年间怎么变、为什么变、先修哪里。</p>
+          <span class="tag">网络分析 · 遥感</span>
+        </li>
+
+        <li>
+          <span class="when">2026.10.28</span>
+          <h3>游戏地图坐标提取</h3>
+          <p>有些地图没有经纬网，但依然有位置。从地图文件里解出世界坐标，给阿尔卑斯、阿拉斯加、日本三块地形
+             建了一份坐标总表与分级图——纯粹好奇，顺手练解析。</p>
+          <span class="tag">业余实验 · 坐标解析</span>
+        </li>
+
+        <li>
+          <span class="when">2026.11.10</span>
+          <h3>开源与主页</h3>
+          <p>三个研究仓库与个人主页上线：只公开项目说明与代码，论文原文、图件与原始数据保留在本地。</p>
+          <span class="tag">工程 · Git</span>
+        </li>
+
+        <li class="now">
+          <span class="when"><em>2026.11 — 至今</em> · 进行中</span>
+          <h3>冷岛网络：数据与地表温度反演</h3>
+          <p>影像与土地覆被入库，做地表温度、植被与水体指数反演，先把「冷源在哪里」落成一张可靠的栅格。</p>
+          <span class="tag">in progress</span>
+        </li>
+      </ol>
+
+      <div class="subhead">接下来 / Next</div>
+      <div class="chain">
+        <div class="step">
+          <span class="num">01</span>
+          <b>源地识别</b>
+          <span class="d">形态学空间格局分析提核心区与源地，看斑块结构怎么变。</span>
+        </div>
+        <div class="step">
+          <span class="num">02</span>
+          <b>阻力面与廊道</b>
+          <span class="d">多因子加权成阻力面，最小累积阻力模型求廊道骨架。</span>
+        </div>
+        <div class="step">
+          <span class="num">03</span>
+          <b>瓶颈识别</b>
+          <span class="d">高阻力段与电路夹点并行比较，锁定真正该修的区段。</span>
+        </div>
+        <div class="step">
+          <span class="num">04</span>
+          <b>归因与优先级</b>
+          <span class="d">2×2 分解加熵权排序，出图并写成论文。</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section id="research">
     <div class="wrap">

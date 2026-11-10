@@ -32,6 +32,12 @@ GitHub Pages 自动构建：推送到 `main` 分支即可，无需 Actions。
 | --- | --- |
 | 名字、标语、简介 | `index.html` 顶部 `<h1>` 与 `.lede` |
 | 坐标、天气位置 | `.chip` 与脚本里的 `fetch(...latitude=31.165&longitude=121.405...)` |
+| **研究线（时间线）** | `<section id="log">` 里的 `<ol class="tl">`，一条 `<li>` 就是一条记录 |
+| **未来计划（事件链）** | 同段落里的 `<div class="chain">`，一个 `.step` 是一个节点 |
 | 研究项目卡片 | `<section id="research">` 里的三个 `<article class="card">` |
 | 联系方式 | `<section id="contact">` |
 | 配色 | `:root` 里的 CSS 变量 |
+
+时间线状态只有两种写法：普通 `<li>` = 已完成（实心点），`<li class="now">` = 进行中（呼吸点）。
+未来节点用 `<div class="step">`，`<span class="num">` 是序号，`<b>` 是标题，`<span class="d">` 是说明。
+
