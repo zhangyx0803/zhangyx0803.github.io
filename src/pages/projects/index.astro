@@ -43,7 +43,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
   <style>
     .section { padding: 120px 0 100px; }
-    .crumb { margin: 0 0 18px; font-size: 14px; color: var(--sub); }
+    .crumb { margin: 0 0 18px; font-size: 14px; color: var(--muted); }
     .page-title {
       margin: 0;
       font-size: clamp(34px, 5vw, 60px);
@@ -51,8 +51,8 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       line-height: 1.05;
       font-weight: 600;
     }
-    .page-lede { margin: 18px 0 0; font-size: 19px; color: var(--sub); max-width: 34em; }
-    .work-list { border-top: 1px solid var(--line); }
+    .page-lede { margin: 18px 0 0; font-size: 19px; color: var(--muted); max-width: 34em; }
+    .work-list { border-top: 1px solid var(--rule); }
     .work-list .work-item:first-child { border-top: 0; }
   </style>
 </Base>

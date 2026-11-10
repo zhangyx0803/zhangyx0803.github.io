@@ -1,12 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import mapSvg from '../assets/map-scene.svg?raw';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const notes = (await getCollection('notes'))
   .filter((n) => !n.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, 4);
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -26,114 +30,131 @@ const jsonLd = {
   description="Zane Zhang，地理信息科学。研究城市冷岛网络的跨期演变、遥感反演与专题制图；记录方法、踩坑与复现步骤。"
   jsonLd={jsonLd}
 >
-  <section class="hero" data-nav="dark">
+  <section class="hero" data-nav="light">
     <div class="wrap">
       <span class="hand">你好</span>
       <h1>Zane Zhang</h1>
       <p class="lede">
-        地理信息科学。最近在做上海市冷岛网络的跨期分析，也在整理一套游客点评的分析流程。
+        地理信息科学。研究城市冷岛网络的跨期演变，也整理遥感反演与专题制图里那些容易写错的地方。
       </p>
       <p class="meta">
         <b>31.1650°N&nbsp;&nbsp;121.4050°E</b> · 上海 · 徐汇 · <span id="weather">正在读取天气…</span>
       </p>
-      <p class="cue"><i></i>继续向下</p>
-    </div>
-  </section>
-
-  <section class="section section--tight story" id="map" data-nav="light">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 class="mask"><span>先确定位置。</span></h2>
-        <p data-reveal>同一套投影，三个尺度。往下滚，画面会推近。</p>
-      </div>
-
-      <div class="story-grid">
-        <div class="stage" id="stage" aria-hidden="true">
-          <img id="world" src="/assets/world.svg" alt="" width="980" height="456" />
-          <span class="stage-note" id="stage-note">中国</span>
-        </div>
-
-        <div class="steps" id="steps">
-          <div class="step is-on" data-i="0">
-            <div class="n">01</div>
-            <h3>中国</h3>
-            <p>上海在长江入海口。季风、平原、密集的人口，决定了它夏天的热不是偶然。</p>
-          </div>
-          <div class="step" data-i="1">
-            <div class="n">02</div>
-            <h3>长江三角洲</h3>
-            <p>水域与建成区交替出现。冷源不是孤岛，它们被水系和绿带连起来。</p>
-          </div>
-          <div class="step" data-i="2">
-            <div class="n">03</div>
-            <h3>徐汇</h3>
-            <p>31.1650°N、121.4050°E。我的大部分数据从这里开始。</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--dark work" id="work" data-nav="dark">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 class="mask"><span>在做的两件事。</span></h2>
-        <p data-reveal>代码与项目说明公开；论文、图件与原始数据不公开，需要数据可以邮件索取。</p>
-      </div>
-
-      <div class="work-list">
-        {projects.map((p, i) => (
-          <article class="work-item" data-reveal style={`--d:${i * 70}ms`}>
-            <div>
-              <h3><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
-              <p class="meta-line">{p.data.period} · {p.data.status}</p>
-            </div>
-            <div>
-              <p>{p.data.summary}</p>
-              {p.data.methods.length > 0 && (
-                <p class="meta-line">{p.data.methods.join(' · ')}</p>
-              )}
-              <a class="more" href={`/projects/${p.id}/`}>数据与复现步骤 →</a>
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section notes" id="notes" data-nav="light">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 class="mask"><span>最近的笔记。</span></h2>
-        <p data-reveal>方法、踩坑、复现细节。写下来是为了下次不用再踩一遍。</p>
-      </div>
-
-      <div class="note-list">
-        {notes.map((n, i) => (
-          <div class="note-row" data-reveal style={`--d:${i * 60}ms`}>
-            <time datetime={n.data.date.toISOString()}>
-              {n.data.date.getFullYear()}.{String(n.data.date.getMonth() + 1).padStart(2, '0')}.{String(n.data.date.getDate()).padStart(2, '0')}
-            </time>
-            <div>
-              <h3><a href={`/notes/${n.id}/`}>{n.data.title}</a></h3>
-              <p>{n.data.summary}</p>
-            </div>
-            <span class="arrow">→</span>
-          </div>
-        ))}
-      </div>
-
-      <p style="margin-top:28px" data-reveal>
-        <a href="/notes/">全部笔记 →</a>
+      <p class="links-row">
+        <a href="/projects/">研究</a>
+        <a href="/notes/">笔记</a>
+        <a href="#contact">联系</a>
       </p>
     </div>
   </section>
 
-  <section class="section log" id="log" data-nav="light">
+  <section class="section atlas" id="map">
     <div class="wrap">
       <div class="section-head">
-        <h2 class="mask"><span>时间线。</span></h2>
-        <p data-reveal>做完一部分就记一条；没做完的挂在下面。</p>
+        <span class="eyebrow">Figure 1</span>
+        <h2 class="mask"><span>从国土，到一条街。</span></h2>
+        <p data-reveal>同一套 Albers 投影，一张图，三个尺度。往下滚，镜头连续推近。</p>
+      </div>
+
+      <div class="atlas-grid">
+        <div class="atlas-stage" id="stage" data-step="0" aria-hidden="true">
+          <div id="scene" class="scene" set:html={mapSvg}></div>
+          <div class="atlas-labels" id="labels">
+            <span class="mk lv0 lv1 lv2" data-p="shanghai"></span>
+            <span class="lbl lv0 lv1 lv2" data-p="shanghai" data-dx="10" data-dy="-8">上海</span>
+            <span class="mk lv1" data-p="nanjing"></span>
+            <span class="lbl lv1" data-p="nanjing" data-dx="9" data-dy="-4">南京</span>
+            <span class="mk lv1" data-p="hangzhou"></span>
+            <span class="lbl lv1" data-p="hangzhou" data-dx="9" data-dy="10">杭州</span>
+            <span class="mk lv1" data-p="suzhou"></span>
+            <span class="lbl lv1" data-p="suzhou" data-dx="-9" data-dy="-6" data-anchor="end">苏州</span>
+            <span class="mk lv1" data-p="ningbo"></span>
+            <span class="lbl lv1" data-p="ningbo" data-dx="9" data-dy="12">宁波</span>
+            <span class="mk lv1" data-p="hefei"></span>
+            <span class="lbl lv1" data-p="hefei" data-dx="-9" data-dy="-6" data-anchor="end">合肥</span>
+            <span class="mk lv2" data-p="campus"></span>
+            <span class="lbl lv2" data-p="campus" data-dx="10" data-dy="-8">徐汇</span>
+          </div>
+          <div class="atlas-scale">
+            <span class="bar" id="scale-bar"></span>
+            <span class="num" id="scale-num">1000 km</span>
+          </div>
+        </div>
+
+        <div class="atlas-steps" id="steps">
+          <div class="step is-on" data-i="0">
+            <span class="n">01 / 中国</span>
+            <h3>长江入海口</h3>
+            <p>上海在长江入海口。季风、平原、密集的人口，决定了它夏天的热不是偶然。</p>
+          </div>
+          <div class="step" data-i="1">
+            <span class="n">02 / 长江三角洲</span>
+            <h3>水域与建成区交替</h3>
+            <p>往近处看，冷源不是孤岛：河道与绿带把它们连成网络。</p>
+          </div>
+          <div class="step" data-i="2">
+            <span class="n">03 / 徐汇</span>
+            <h3>31.1650°N, 121.4050°E</h3>
+            <p>再近一步，是这 3 公里。我的大部分数据从这里开始。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="work" data-nav="dark">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Research</span>
+        <h2 class="mask"><span>在做的两件事。</span></h2>
+        <p data-reveal>代码与项目说明公开；论文、图件与原始数据不公开，需要数据可以邮件索取。</p>
+      </div>
+
+      {projects.map((p, i) => (
+        <article class="pub" data-reveal style={`--d:${i * 60}ms`}>
+          <div class="year">{p.data.period.split('—')[0].trim().slice(0, 7)}</div>
+          <div>
+            <h3><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
+            <p class="meta-line">{p.data.status}{p.data.methods.length ? ` · ${p.data.methods.slice(0, 4).join(' · ')}` : ''}</p>
+            <p>{p.data.summary}</p>
+            <div class="links">
+              <a href={`/projects/${p.id}/`}>数据与复现 →</a>
+              {p.data.repo && <a href={p.data.repo}>GitHub</a>}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" id="notes">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Notes</span>
+        <h2 class="mask"><span>写下来的方法。</span></h2>
+        <p data-reveal>投影与比例尺、反演里的坑、排版细节。都是踩过之后记的。</p>
+      </div>
+
+      {notes.map((n, i) => (
+        <div class="note-row" data-reveal style={`--d:${i * 50}ms`}>
+          <time datetime={n.data.date.toISOString()}>{fmt(n.data.date)}</time>
+          <div>
+            <h3><a href={`/notes/${n.id}/`}>{n.data.title}</a></h3>
+            <p>{n.data.summary}</p>
+          </div>
+        </div>
+      ))}
+
+      <p style="margin-top:26px"><a href="/notes/">全部笔记 →</a></p>
+    </div>
+  </section>
+
+  <section class="section" id="log">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Timeline</span>
+        <h2 class="mask"><span>进度。</span></h2>
+        <p data-reveal>做完一部分记一条；没做完的挂在下面。</p>
       </div>
 
       <div class="entry" data-reveal>
@@ -180,11 +201,14 @@ const jsonLd = {
     </div>
   </section>
 
-  <section class="section contact" id="contact" data-nav="light">
+  <section class="section" id="contact">
     <div class="wrap">
-      <h2 class="mask"><span>写信给我。</span></h2>
+      <div class="section-head">
+        <span class="eyebrow">Contact</span>
+        <h2 class="mask"><span>写信给我。</span></h2>
+      </div>
       <a class="contact-big" href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>
-      <p class="meta-line" style="margin-top:22px">
+      <p style="margin-top:20px;font-family:var(--mono);font-size:12.5px;color:var(--muted)">
         <a href="https://github.com/zhangyx0803">GitHub</a> ·
         <a href="https://www.openstreetmap.org/?mlat=31.1650&mlon=121.4050#map=15/31.1650/121.4050">31.1650°N 121.4050°E</a>
       </p>
@@ -192,151 +216,197 @@ const jsonLd = {
   </section>
 
   <style>
-    .story { padding-bottom: 40px; }
-    .story-grid {
+    .atlas { padding-bottom: 48px; }
+    .atlas-grid {
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 80px;
+      grid-template-columns: 1.16fr .84fr;
+      gap: 64px;
       align-items: start;
+      margin-top: 8px;
     }
-    .stage {
+    .atlas-stage {
       position: sticky;
       top: 84px;
-      height: min(64vh, 600px);
+      aspect-ratio: 1000 / 620;
       overflow: hidden;
-      background: #fff;
+      background: var(--paper);
+      border: 1px solid var(--rule-soft);
     }
-    .stage img {
+    .scene {
       position: absolute;
       top: 0; left: 0;
-      width: 980px; height: 456px;
+      width: 1000px; height: 620px;
       transform-origin: 0 0;
-      will-change: transform;
-      transition: transform 1.5s var(--ease);
+      transition: transform 1.35s cubic-bezier(.22, 1, .36, 1);
     }
-    .stage.no-anim img { transition: none; }
-    .stage-note {
+    .scene > svg {
+      display: block;
+      width: 1000px; height: 620px;
+      max-width: none;
+    }
+    .stage-static .scene { transition: none; }
+
+    .atlas-labels { position: absolute; inset: 0; pointer-events: none; }
+    .atlas-labels .lbl {
       position: absolute;
-      left: 0; top: 0;
-      padding: 6px 12px 6px 0;
-      font-size: 13px;
-      color: var(--sub);
-      background: rgba(255,255,255,.92);
+      font-family: var(--sans);
+      font-size: 11.5px;
+      letter-spacing: .02em;
+      color: var(--ink);
+      background: rgba(250, 248, 245, .86);
+      padding: 1px 5px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity .5s;
+      transform: translate(0, -50%);
     }
-    .steps .step {
-      min-height: 72vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .atlas-labels .lbl[data-anchor="end"] { transform: translate(-100%, -50%); }
+    .atlas-labels .mk {
+      position: absolute;
+      width: 5px; height: 5px;
+      margin: -2.5px 0 0 -2.5px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      opacity: 0;
+      transition: opacity .5s;
     }
-    .steps .step .n { font-size: 13px; color: #a1a1a6; }
-    .steps .step h3 {
-      margin: 12px 0 10px;
-      font-size: clamp(24px, 2.6vw, 32px);
-      letter-spacing: -0.03em;
-      font-weight: 600;
-      color: #b8b8bd;
-      transition: color .6s var(--ease);
+    .atlas-stage[data-step="0"] .lv0 { opacity: 1; }
+    .atlas-stage[data-step="1"] .lv1 { opacity: 1; }
+    .atlas-stage[data-step="2"] .lv2 { opacity: 1; }
+
+    .atlas-scale {
+      position: absolute;
+      left: 12px; bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 10.5px; color: var(--muted);
     }
-    .steps .step p { margin: 0; color: #a8a8ad; max-width: 30em; transition: color .6s var(--ease); }
-    .steps .step.is-on h3 { color: var(--ink); }
-    .steps .step.is-on p { color: var(--sub); }
+    .atlas-scale .bar {
+      display: block; height: 5px;
+      border: 1px solid var(--muted); border-top: 0;
+      transition: width .5s;
+    }
+
+    .atlas-steps .step {
+      min-height: 62vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8px 0;
+    }
+    .atlas-steps .n {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); transition: color .5s;
+    }
+    .atlas-steps h3 {
+      margin: 10px 0 8px;
+      font-size: clamp(21px, 2.2vw, 27px);
+      color: #b7aea0;
+      transition: color .5s;
+    }
+    .atlas-steps p { margin: 0; color: #a89e90; max-width: 26em; transition: color .5s; }
+    .atlas-steps .step.is-on .n { color: var(--terracotta); }
+    .atlas-steps .step.is-on h3 { color: var(--navy); }
+    .atlas-steps .step.is-on p { color: #3d372f; }
 
     @media (max-width: 900px) {
-      .story-grid { display: block; }
-      .stage { position: sticky; top: 52px; height: 46vh; margin: 0 0 10px; z-index: 5; }
-      .stage img { transition-duration: 1.15s; }
-      .steps .step { min-height: 62vh; padding-bottom: 20px; }
-      .steps .step .n { display: none; }
-    }
-
-    /* timeline */
-    .entry {
-      display: grid;
-      grid-template-columns: 150px 1fr;
-      gap: 32px;
-      padding: 30px 0;
-      border-top: 1px solid var(--line);
-    }
-    .entry:last-child { border-bottom: 1px solid var(--line); }
-    .entry .when { font-size: 15px; color: var(--sub); font-variant-numeric: tabular-nums; }
-    .entry.is-now .when { color: var(--ink); }
-    .entry.is-now .when::before {
-      content: ""; display: inline-block; width: 6px; height: 6px;
-      border-radius: 50%; background: var(--green); margin-right: 9px; vertical-align: 2px;
-    }
-    .entry h3 { margin: 0 0 4px; font-size: 21px; letter-spacing: -0.02em; font-weight: 600; }
-    .entry .what { margin: 0 0 12px; color: var(--sub); }
-    .entry ul { list-style: none; margin: 0; padding: 0; font-size: 15.5px; color: var(--sub); }
-    .entry li { position: relative; padding-left: 20px; margin: 6px 0; }
-    .entry li::before { position: absolute; left: 0; top: 0; font-size: 13px; }
-    .entry li.done::before { content: "✓"; color: var(--green); }
-    .entry li.todo::before { content: "○"; color: #b0b0b5; }
-    .entry li.todo { color: #a1a1a6; }
-    @media (max-width: 720px) {
-      .entry { grid-template-columns: 1fr; gap: 6px; padding: 24px 0; }
+      .atlas-grid { display: block; }
+      .atlas-stage { position: sticky; top: 62px; z-index: 5; margin-bottom: 12px; }
+      .atlas-steps .step { min-height: 54vh; }
+      .atlas-steps h3 { font-size: 22px; }
     }
   </style>
 
   <script>
-    const WMO = {
-      0: '晴', 1: '晴间多云', 2: '多云', 3: '阴', 45: '雾', 48: '雾凇',
-      51: '毛毛雨', 53: '小雨', 55: '中雨', 61: '小雨', 63: '中雨', 65: '大雨',
-      71: '小雪', 73: '中雪', 75: '大雪', 80: '阵雨', 81: '阵雨', 82: '强阵雨',
-      95: '雷阵雨', 96: '雷阵雨伴冰雹', 99: '强雷暴',
+    const KM_PER_UNIT = 8.03;
+    const LEVELS = [
+      { x: 246.1, y: -5.6, w: 709.7, h: 508.4 },
+      { x: 676.5, y: 333.2, w: 69.5, h: 45.8 },
+      { x: 718.7, y: 344.8, w: 18.2, h: 16.0 },
+    ];
+    const POINTS = {
+      shanghai: [728.5, 353.3],
+      campus: [727.8, 354.4],
+      nanjing: [694.3, 346.2],
+      hangzhou: [714.7, 369.8],
+      suzhou: [717.6, 354.1],
+      ningbo: [732.7, 372.9],
+      hefei: [676.4, 351.5],
     };
 
-    const wx = document.getElementById('weather');
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=31.165&longitude=121.405&current=temperature_2m,weather_code&timezone=Asia%2FShanghai')
-      .then((r) => r.json())
-      .then((d) => {
-        if (!wx) return;
-        wx.textContent = `实时 ${d.current.temperature_2m.toFixed(1)}°C · ${WMO[d.current.weather_code] ?? '—'}`;
-      })
-      .catch(() => { if (wx) wx.textContent = '天气暂不可用'; });
-
-    const world = document.getElementById('world');
     const stage = document.getElementById('stage');
-    const note = document.getElementById('stage-note');
+    const scene = document.getElementById('scene');
+    const labels = [...document.querySelectorAll('.atlas-labels [data-p]')];
+    const bar = document.getElementById('scale-bar');
+    const num = document.getElementById('scale-num');
     const steps = [...document.querySelectorAll('#steps .step')];
-
-    const PANELS = [
-      { x: 26, y: 54, w: 330, h: 340, label: '中国' },
-      { x: 372, y: 54, w: 258, h: 340, label: '长江三角洲' },
-      { x: 646, y: 54, w: 308, h: 340, label: '徐汇' },
-    ];
     let current = 0;
 
+    function nice(v) {
+      const mag = Math.pow(10, Math.floor(Math.log10(v)));
+      const n = v / mag;
+      const pick = n < 1.5 ? 1 : n < 3.5 ? 2 : n < 7.5 ? 5 : 10;
+      return pick * mag;
+    }
+
     function frame(i, animate) {
-      if (!world || !stage) return;
-      const p = PANELS[i];
+      if (!stage || !scene) return;
+      const p = LEVELS[i];
       const vw = stage.clientWidth;
       const vh = stage.clientHeight;
       if (!vw || !vh) return;
-      const scale = Math.max(vw / p.w, vh / p.h);
-      const cx = p.x + p.w / 2;
-      const cy = p.y + p.h / 2;
-      if (!animate) stage.classList.add('no-anim');
-      world.style.transform =
-        `translate(${(vw / 2 - cx * scale).toFixed(2)}px, ${(vh / 2 - cy * scale).toFixed(2)}px) scale(${scale.toFixed(4)})`;
-      if (!animate) requestAnimationFrame(() => stage.classList.remove('no-anim'));
+      // expand the target rect to the stage aspect so nothing is cropped
+      const stageAspect = vw / vh;
+      let rw = p.w, rh = p.h;
+      if (rw / rh < stageAspect) rw = rh * stageAspect;
+      else rh = rw / stageAspect;
+      const cx = p.x + p.w / 2, cy = p.y + p.h / 2;
+      const s = vw / rw;
+      const tx = vw / 2 - cx * s;
+      const ty = vh / 2 - cy * s;
+      if (!animate) stage.classList.add('stage-static');
+      scene.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${s.toFixed(4)})`;
+      if (!animate) requestAnimationFrame(() => stage.classList.remove('stage-static'));
+      stage.dataset.step = String(i);
       current = i;
-      if (note) note.textContent = p.label;
+
+      const g10 = document.getElementById('g10');
+      const g2 = document.getElementById('g2');
+      const g05 = document.getElementById('g05');
+      if (g10) g10.style.opacity = i === 0 ? '1' : '0.25';
+      if (g2) g2.style.opacity = i >= 1 ? '0.95' : '0';
+      if (g05) g05.style.opacity = i >= 2 ? '0.95' : '0';
+
+      for (const el of labels) {
+        const pt = POINTS[el.dataset.p];
+        const x = pt[0] * s + tx;
+        const y = pt[1] * s + ty;
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        const dx = Number(el.dataset.dx || 0);
+        const dy = Number(el.dataset.dy || 0);
+        if (dx) el.style.marginLeft = dx + 'px';
+        if (dy) el.style.marginTop = dy + 'px';
+      }
+
+      const km = nice((88 / s) * KM_PER_UNIT);
+      if (bar && num) {
+        bar.style.width = ((km / KM_PER_UNIT) * s).toFixed(1) + 'px';
+        num.textContent = km >= 1 ? Math.round(km) + ' km' : Math.round(km * 1000) + ' m';
+      }
     }
 
     if (steps.length && stage) {
-      const stepIO = new IntersectionObserver(
+      const io = new IntersectionObserver(
         (entries) => {
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            const i = Number(entry.target.dataset.i);
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            const i = Number(e.target.dataset.i);
             steps.forEach((s, k) => s.classList.toggle('is-on', k === i));
             frame(i, true);
           }
         },
-        { rootMargin: '-45% 0px -45% 0px', threshold: 0 }
+        { rootMargin: '-42% 0px -42% 0px', threshold: 0 }
       );
-      steps.forEach((s) => stepIO.observe(s));
+      steps.forEach((s) => io.observe(s));
 
       frame(0, false);
       let rz = 0;
@@ -344,6 +414,22 @@ const jsonLd = {
         window.clearTimeout(rz);
         rz = window.setTimeout(() => frame(current, false), 140);
       });
+    }
+
+    const WMO = {
+      0: '晴', 1: '晴间多云', 2: '多云', 3: '阴', 45: '雾', 48: '雾凇',
+      51: '毛毛雨', 53: '小雨', 55: '中雨', 61: '小雨', 63: '中雨', 65: '大雨',
+      71: '小雪', 73: '中雪', 75: '大雪', 80: '阵雨', 81: '阵雨', 82: '强阵雨',
+      95: '雷阵雨', 96: '雷阵雨伴冰雹', 99: '强雷暴',
+    };
+    const wx = document.getElementById('weather');
+    if (wx) {
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=31.165&longitude=121.405&current=temperature_2m,weather_code&timezone=Asia%2FShanghai')
+        .then((r) => r.json())
+        .then((d) => {
+          wx.textContent = `${d.current.temperature_2m.toFixed(1)}°C · ${WMO[d.current.weather_code] ?? '—'}`;
+        })
+        .catch(() => { wx.textContent = '暂时不可用'; });
     }
   </script>
 </Base>
