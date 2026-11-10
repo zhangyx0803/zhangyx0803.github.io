@@ -1,0 +1,86 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, subtitle, period, status, summary, methods, repo } = entry.data;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: title,
+  description: summary,
+  author: { '@type': 'Person', name: 'Zane Zhang', url: 'https://zhangyx0803.github.io/' },
+  dateModified: entry.data.period,
+  keywords: methods.join(', '),
+  ...(repo ? { codeRepository: repo } : {}),
+};
+---
+
+<Base title={`${title} · Zane Zhang`} description={summary} type="article" jsonLd={jsonLd}>
+  <article class="article" data-nav="light">
+    <div class="wrap">
+      <p class="crumb"><a href="/projects/">研究</a></p>
+      <h1 data-reveal>{title}</h1>
+      {subtitle && <p class="subtitle" data-reveal>{subtitle}</p>}
+
+      <dl class="facts" data-reveal>
+        <div><dt>时间</dt><dd>{period}</dd></div>
+        <div><dt>状态</dt><dd>{status}</dd></div>
+        {methods.length > 0 && <div><dt>方法</dt><dd>{methods.join(' · ')}</dd></div>}
+        {repo && <div><dt>代码</dt><dd><a href={repo}>GitHub 仓库</a></dd></div>}
+      </dl>
+
+      <div class="prose" data-reveal>
+        <Content />
+      </div>
+
+      <nav class="article-foot">
+        <a href="/projects/">← 返回研究列表</a>
+        <a href="/#contact">需要数据？写信给我 →</a>
+      </nav>
+    </div>
+  </article>
+
+  <style>
+    .article { padding: 120px 0 100px; }
+    .crumb { margin: 0 0 18px; font-size: 14px; color: var(--sub); }
+    .article h1 {
+      margin: 0;
+      font-size: clamp(30px, 4.6vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+      font-weight: 600;
+      max-width: 20em;
+    }
+    .subtitle { margin: 12px 0 0; font-size: 19px; color: var(--sub); }
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px 32px;
+      margin: 40px 0 52px;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+    .facts dt { color: var(--sub); font-size: 13px; margin-bottom: 4px; }
+    .facts dd { margin: 0; }
+    .article-foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 32px;
+      justify-content: space-between;
+      margin-top: 64px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      font-size: 16px;
+    }
+  </style>
+</Base>

@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base
+  title="研究 · Zane Zhang"
+  description="上海市冷岛网络演变、乌镇双栅游客情感对比：研究问题、所用数据、数据索取方式与复现步骤。"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: '研究',
+    description: '两个进行中的研究项目，含数据清单与复现步骤。',
+  }}
+>
+  <section class="section" data-nav="light">
+    <div class="wrap">
+      <p class="crumb"><a href="/">Zane Zhang</a></p>
+      <h1 class="page-title" data-reveal>研究</h1>
+      <p class="page-lede" data-reveal>
+        两个进行中的项目。每一页都写明用了什么数据、数据怎么拿、怎么复现。
+      </p>
+
+      <div class="work-list" style="margin-top:56px">
+        {projects.map((p, i) => (
+          <article class="work-item" data-reveal style={`--d:${i * 70}ms`}>
+            <div>
+              <h3><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
+              <p class="meta-line">{p.data.period} · {p.data.status}</p>
+            </div>
+            <div>
+              <p>{p.data.summary}</p>
+              {p.data.methods.length > 0 && <p class="meta-line">{p.data.methods.join(' · ')}</p>}
+              <a class="more" href={`/projects/${p.id}/`}>数据与复现步骤 →</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .section { padding: 120px 0 100px; }
+    .crumb { margin: 0 0 18px; font-size: 14px; color: var(--sub); }
+    .page-title {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 60px);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      font-weight: 600;
+    }
+    .page-lede { margin: 18px 0 0; font-size: 19px; color: var(--sub); max-width: 34em; }
+    .work-list { border-top: 1px solid var(--line); }
+    .work-list .work-item:first-child { border-top: 0; }
+  </style>
+</Base>

@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="zh-CN" data-astro-cid-hkbrpulz><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>乌镇东栅 / 西栅 游客情感对比 · Zane Zhang</title><meta name="description" content="从公开点评出发，经主题分类与情感分析，看两栅游客的体验差异到底集中在哪些维度。"><link rel="canonical" href="https://zhangyx0803.github.io/projects/wuzhen-twin-gate/"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta name="author" content="Zane Zhang"><meta name="theme-color" content="#000000"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="Zane Zhang · RSS" href="/rss.xml"><link rel="sitemap" type="application/xml" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="Zane Zhang"><meta property="og:title" content="乌镇东栅 / 西栅 游客情感对比 · Zane Zhang"><meta property="og:description" content="从公开点评出发，经主题分类与情感分析，看两栅游客的体验差异到底集中在哪些维度。"><meta property="og:url" content="https://zhangyx0803.github.io/projects/wuzhen-twin-gate/"><meta property="og:image" content="https://zhangyx0803.github.io/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="乌镇东栅 / 西栅 游客情感对比 · Zane Zhang"><meta name="twitter:description" content="从公开点评出发，经主题分类与情感分析，看两栅游客的体验差异到底集中在哪些维度。"><meta name="twitter:image" content="https://zhangyx0803.github.io/og.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"CreativeWork","name":"乌镇东栅 / 西栅 游客情感对比","description":"从公开点评出发，经主题分类与情感分析，看两栅游客的体验差异到底集中在哪些维度。","author":{"@type":"Person","name":"Zane Zhang","url":"https://zhangyx0803.github.io/"},"dateModified":"2026.10 — 至今","keywords":"中文 NLP, 主题分类, 情感分析, 随机森林, SHAP, Mann-Whitney U, FDR","codeRepository":"https://github.com/zhangyx0803/wuzhen-twin-gate-sentiment"}</script><link rel="stylesheet" href="/_astro/Base.cR_XV3fM.css"><style>.article[data-astro-cid-yq2gsstb]{padding:120px 0 100px}.crumb[data-astro-cid-yq2gsstb]{color:var(--sub);margin:0 0 18px;font-size:14px}.article[data-astro-cid-yq2gsstb] h1[data-astro-cid-yq2gsstb]{letter-spacing:-.035em;max-width:20em;margin:0;font-size:clamp(30px,4.6vw,52px);font-weight:600;line-height:1.1}.subtitle[data-astro-cid-yq2gsstb]{color:var(--sub);margin:12px 0 0;font-size:19px}.facts[data-astro-cid-yq2gsstb]{border-top:1px solid var(--line);border-bottom:1px solid var(--line);grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px 32px;margin:40px 0 52px;padding:22px 0;font-size:15px;display:grid}.facts[data-astro-cid-yq2gsstb] dt[data-astro-cid-yq2gsstb]{color:var(--sub);margin-bottom:4px;font-size:13px}.facts[data-astro-cid-yq2gsstb] dd[data-astro-cid-yq2gsstb]{margin:0}.article-foot[data-astro-cid-yq2gsstb]{border-top:1px solid var(--line);flex-wrap:wrap;justify-content:space-between;gap:12px 32px;margin-top:64px;padding-top:28px;font-size:16px;display:flex}
+</style></head><body data-astro-cid-hkbrpulz><a class="skip" href="#main" data-astro-cid-hkbrpulz>跳到正文</a><header class="site-header" id="site-header" data-astro-cid-hkbrpulz><nav class="wrap" data-astro-cid-hkbrpulz><a class="brand" href="/" data-astro-cid-hkbrpulz>Zane Zhang</a><div class="links" data-astro-cid-hkbrpulz><a href="/projects" class="opt" data-astro-cid-hkbrpulz>研究</a><a href="/notes" data-astro-cid-hkbrpulz>笔记</a><a href="/about" data-astro-cid-hkbrpulz>关于</a><a href="/#contact" data-astro-cid-hkbrpulz>联系</a></div></nav></header><main id="main" data-astro-cid-hkbrpulz><article class="article" data-nav="light" data-astro-cid-yq2gsstb><div class="wrap" data-astro-cid-yq2gsstb><p class="crumb" data-astro-cid-yq2gsstb><a href="/projects/" data-astro-cid-yq2gsstb>研究</a></p><h1 data-reveal data-astro-cid-yq2gsstb>乌镇东栅 / 西栅 游客情感对比</h1><p class="subtitle" data-reveal data-astro-cid-yq2gsstb>同一座古镇，两道门</p><dl class="facts" data-reveal data-astro-cid-yq2gsstb><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>时间</dt><dd data-astro-cid-yq2gsstb>2026.10 — 至今</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>状态</dt><dd data-astro-cid-yq2gsstb>代码开源</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>方法</dt><dd data-astro-cid-yq2gsstb>中文 NLP · 主题分类 · 情感分析 · 随机森林 · SHAP · Mann-Whitney U · FDR</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>代码</dt><dd data-astro-cid-yq2gsstb><a href="https://github.com/zhangyx0803/wuzhen-twin-gate-sentiment" data-astro-cid-yq2gsstb>GitHub 仓库</a></dd></div></dl><div class="prose" data-reveal data-astro-cid-yq2gsstb><h2 id="在回答什么">在回答什么</h2>
+<p>东栅偏原住民生活与观光，西栅偏度假与夜游；门票、业态、空间组织都不同。想用数据回答三件事：</p>
+<ol>
+<li>两栅游客的情感倾向是否有显著差异；</li>
+<li>差异集中在哪些体验维度（餐饮、住宿、拥挤、夜景、服务、价格……）；</li>
+<li>差异是否随季节与年份变化。</li>
+</ol>
+<h2 id="数据">数据</h2>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>内容</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>景区游客点评</td>
+<td>文本、评分、时间、地点归属</td>
+<td>情感与主题分析的主数据</td>
+</tr>
+<tr>
+<td>高德 POI</td>
+<td>周边业态与设施点</td>
+<td>业态结构对照</td>
+</tr>
+<tr>
+<td>人工标注样本</td>
+<td>分层抽样后人工标主题</td>
+<td>训练与校验分类器</td>
+</tr>
+<tr>
+<td>景区经营数据</td>
+<td>2016—2024 年度经营口径</td>
+<td>背景对照</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>原始点评与 POI 不随仓库分发</strong>，受平台条款约束；仓库里只有采集与分析代码。
+需要样例数据或标注表做复现，可以发邮件到 <a href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a> 说明用途。</p>
+</blockquote>
+<h2 id="复现步骤">复现步骤</h2>
+<p>代码是 13 个可单独运行的脚本，按序号走完即可：</p>
+<ol>
+<li><code>00_check_env.py</code> 环境自检（Python 3.9+）。</li>
+<li><code>01_collect_ctrip.py</code> 点评采集：浏览器里复制 cURL 存成本地文件，脚本按此翻页，支持断点续采。</li>
+<li><code>02_collect_amap_poi.py</code> 采集 POI。</li>
+<li><code>03_clean.py</code> 去重、去广告、剔除重复景区简介。</li>
+<li><code>04_segment.py</code> 地点归属（东栅／西栅／双栅）并分句。</li>
+<li><code>05_rule_classify.py</code> 21 类主题词规则分类，作为可解释基线。</li>
+<li><code>06_make_label_sheet.py</code> 分层抽样生成人工标注表。</li>
+<li><code>07_train_classifier.py</code> 训练分类模型并全量预测。</li>
+<li><code>08_sentiment.py</code> 情感分析，可切换后端（无 Key 时走本地词典降级）。</li>
+<li><code>09_build_features.py</code> 构建随机森林特征矩阵。</li>
+<li><code>10_compare_stats.py</code> 组间检验（卡方 / Mann-Whitney U / FDR 校正）。</li>
+<li><code>11_rf_shap.py</code> 分组建模、置换重要性、SHAP 与偏依赖。</li>
+<li><code>12_timeseries_plots.py</code> 时间序列与论文级图件（300 dpi）。</li>
+</ol>
+<p>所有路径、词典与 Key 都集中在 <code>code/config.py</code>，其他地方不用改。</p>
+<h2 id="方法上的取舍">方法上的取舍</h2>
+<ul>
+<li>规则分类与模型分类并行：前者可解释、可复查，后者接住长尾表达。</li>
+<li>组间检验一律做多重比较校正，避免「21 个主题里挑三个显著」。</li>
+<li>重要性同时给置换重要性与 SHAP，避免单指标误判。</li>
+</ul>
+</div><nav class="article-foot" data-astro-cid-yq2gsstb><a href="/projects/" data-astro-cid-yq2gsstb>← 返回研究列表</a><a href="/#contact" data-astro-cid-yq2gsstb>需要数据？写信给我 →</a></nav></div></article></main><footer class="site-footer" data-astro-cid-hkbrpulz><div class="wrap" data-astro-cid-hkbrpulz><span data-astro-cid-hkbrpulz>© <span id="year" data-astro-cid-hkbrpulz>2026</span> Zane Zhang</span><span data-astro-cid-hkbrpulz><a href="/rss.xml" data-astro-cid-hkbrpulz>RSS</a> ·<a href="/sitemap-index.xml" data-astro-cid-hkbrpulz>Sitemap</a> ·<a href="https://github.com/zhangyx0803" data-astro-cid-hkbrpulz>GitHub</a></span></div></footer><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.Cvb1JlPx.js"></script></body></html>

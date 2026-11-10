@@ -1,66 +1,90 @@
 # zhangyx0803.github.io
 
-个人主页源码 —— 手写 HTML / CSS / JS，无框架、无构建、无追踪。
+个人站：**https://zhangyx0803.github.io/**
 
-**在线地址**：https://zhangyx0803.github.io/
+Astro + Markdown 内容集合。写完 `.md` 丢进 `src/content/` 就是页面，不需要再碰 HTML。
 
-## 结构
-
-单页五段，滚动顺序：
-
-| 段落 | 内容 | 实现要点 |
-| --- | --- | --- |
-| 首屏（黑） | 手写问候 → 姓名 → 一句话 → 坐标与实时天气 | 手写字用 clip-path 从左向右"写"出来；导航在深色区自动转深色 |
-| 地图（白） | 三个尺度 | **一张矢量图**，滚动时用 `transform` 连续缩放，像镜头推进 |
-| 研究（黑） | 两个项目 | 大标题 + 双栏说明 + 细分隔线 |
-| 时间线（白） | 每条记录带完成项清单 | 天粒度日期 + ✓ / ○ 标记 |
-| 联系（白） | 邮箱与坐标 | 大字链接 |
-
-## 地图为什么"像放大"
-
-不是三张图切换，是**同一张图** `assets/world.svg`（980×456，三个面板拼在一起，同一套 Albers 投影）。
-滚动到第 i 步时，脚本按该面板的矩形算出一个目标缩放与位移：
+## 目录
 
 ```
-scale = max(stageW / panelW, stageH / panelH)
-tx = stageW/2 - (panelX + panelW/2) * scale
+src/
+  content/
+    notes/       笔记，一篇一个 .md
+    projects/    研究项目，一项一个 .md
+  layouts/Base.astro      页面骨架（SEO、导航、动效脚本）
+  pages/                  路由：/ /notes /notes/[slug] /projects /projects/[slug] /about /rss.xml
+  styles/global.css       设计系统
+public/                   静态文件（og.png、favicon、world.svg、robots.txt）
+_astro/、index.html …     构建产物（已提交，GitHub Pages 直接从这个分支的根目录发布）
 ```
 
-一次 `transform` 过渡（1.5s，`cubic-bezier(.22,1,.36,1)`）就完成了"推近"，中间没有淡入淡出，
-所以看起来是镜头在动，而不是换图。窗口变化时用同一公式重算，手机上也是同一套逻辑。
+> GitHub Pages 现在配置为「从 main 分支根目录发布」，所以构建产物也提交在根目录。
+> 源文件（`src/`、`public/`）与产物共存，改动后重新构建并覆盖即可。
 
-## 双语
+## 加一篇笔记
 
-每个可翻译元素带 `data-zh` / `data-en`，右上角按钮切换，选择记在 `localStorage`；
-首次访问按浏览器语言决定。切换时手写问候会重新"写"一遍。
+1. 在 `src/content/notes/` 新建 `my-note.md`：
 
-## 响应式
+```md
+---
+title: 标题
+date: 2026-11-12
+summary: 一句话摘要，会显示在列表和搜索结果里
+tags: [制图, 投影]
+---
 
-- 桌面：左侧画面 sticky 吸附，右侧文字随滚动经过。
-- ≤900px：单列，画面粘在顶部（46vh），文字从下方滚过。
-- 断点外还有 720 / 860 两级，控制导航项与双栏折叠。
-
-## 文件
-
-```
-index.html          整站（样式与脚本内联）
-assets/world.svg    三尺度矢量底图（138 KB）
-assets/favicon.svg  图标
+正文……
 ```
 
-## 部署
+2. 构建：
 
-推 `main` 即自动构建。仓库设置：**Settings → Pages → Source: Deploy from a branch → `main` / `(root)`**。
+```bash
+pnpm install      # 第一次
+pnpm build
+node scripts/publish.mjs   # 把 dist/ 覆盖到仓库根目录
+```
 
-## 改哪里
+3. 提交推送，约 1 分钟自动发布。
 
-| 想改 | 位置 |
-| --- | --- |
-| 手写问候 | `#hand` 的 `data-zh` / `data-en` |
-| 姓名与一句话 | `.hero h1` 与 `.lede` |
-| 坐标、天气 | `.hero .meta` 与末尾 `fetch(...latitude=31.165...)` |
-| 三个尺度的文案 | `#steps` 里的三个 `.step` |
-| 面板位置（缩放目标） | 脚本里的 `PANELS` 数组，与 `world.svg` 的 viewBox 坐标一致 |
-| 两个项目 | `.research` 里两个 `<article class="feature">` |
-| 时间线 | `.log` 里的 `.entry`，条目用 `<li class="done">` / `class="todo"` |
-| 配色与字号 | `:root` 变量与各段 `clamp()` |
+## 加一个研究项目
+
+同样的方式，字段换成：
+
+```md
+---
+title: 项目名
+subtitle: 副标题
+period: 2026.10 — 至今
+status: 进行中
+summary: 一句话说明
+methods: [MSPA, MCR]
+repo: https://github.com/...
+order: 3
+---
+```
+
+正文里建议写三节：**在回答什么 / 数据 / 复现步骤**——这也是现在的两个项目页的写法。
+数据一律写「不随仓库分发，需要请邮件索取」，并在 `about` 页说明索取方式。
+
+## SEO
+
+- 每页有独立的 `title` / `description` / `canonical` / OG / Twitter 卡片
+- 结构化数据：首页 `Person`、笔记 `BlogPosting`、项目 `CreativeWork`、列表页 `CollectionPage`
+- `sitemap-index.xml` 由 `@astrojs/sitemap` 生成；`robots.txt` 指向它
+- `rss.xml` 提供订阅
+
+### 让 Google 收录（一次性，约 10 分钟）
+
+1. 打开 [Google Search Console](https://search.google.com/search-console)，添加「网址前缀」资源 `https://zhangyx0803.github.io/`。
+2. 验证方式选「HTML 标记」，把 `<meta name="google-site-verification" ...>` 粘到 `src/layouts/Base.astro` 的 `<head>` 里，重新构建发布，然后回 Search Console 点验证。
+3. 左侧「站点地图」提交 `sitemap-index.xml`。
+4. 用「网址检查」把首页和两篇笔记手动请求收录一次（加快首次抓取）。
+
+之后每次发文章，Search Console 会自己来抓；也可以在 Bing Webmaster Tools 用同一份 sitemap 再提交一次。
+
+## 设计说明
+
+- 黑白段落交替，系统字体，字号用 `clamp()` 自适应。
+- 首屏手写「你好」用 `clip-path` 从左写到右。
+- 地图是**一张**矢量图（`world.svg`，三个面板同一投影），滚动时只改 `transform` 做连续缩放。
+- 滚动显现用 `IntersectionObserver`，`prefers-reduced-motion` 下全部关闭。

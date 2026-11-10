@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('notes'))
+  .filter((n) => !n.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<Base
+  title="笔记 · Zane Zhang"
+  description="地理信息科学的方法笔记：Albers 投影与比例尺、Landsat 地表温度反演、Markdown 排版细节。"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: '笔记',
+    url: 'https://zhangyx0803.github.io/notes/',
+    author: { '@type': 'Person', name: 'Zane Zhang' },
+  }}
+>
+  <section class="section" data-nav="light">
+    <div class="wrap">
+      <p class="crumb"><a href="/">Zane Zhang</a></p>
+      <h1 class="page-title" data-reveal>笔记</h1>
+      <p class="page-lede" data-reveal>方法、踩坑、复现细节。写下来是为了下次不用再踩一遍。</p>
+
+      <div class="note-list" style="margin-top:52px">
+        {notes.map((n, i) => (
+          <div class="note-row" data-reveal style={`--d:${i * 60}ms`}>
+            <time datetime={n.data.date.toISOString()}>{fmt(n.data.date)}</time>
+            <div>
+              <h3><a href={`/notes/${n.id}/`}>{n.data.title}</a></h3>
+              <p>{n.data.summary}</p>
+            </div>
+            <span class="arrow">→</span>
+          </div>
+        ))}
+      </div>
+
+      <p style="margin-top:32px"><a href="/rss.xml">RSS 订阅 →</a></p>
+    </div>
+  </section>
+
+  <style>
+    .section { padding: 120px 0 100px; }
+    .crumb { margin: 0 0 18px; font-size: 14px; color: var(--sub); }
+    .page-title {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 60px);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      font-weight: 600;
+    }
+    .page-lede { margin: 18px 0 0; font-size: 19px; color: var(--sub); max-width: 34em; }
+    .note-list { border-top: 1px solid var(--line); }
+  </style>
+</Base>

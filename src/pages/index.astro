@@ -1,0 +1,349 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const notes = (await getCollection('notes'))
+  .filter((n) => !n.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Zane Zhang',
+  alternateName: '张永轩',
+  url: 'https://zhangyx0803.github.io/',
+  email: 'mailto:zhangyx0803@petalmail.com',
+  jobTitle: '地理信息科学',
+  knowsAbout: ['GIS', 'Remote Sensing', 'Spatial Analysis', 'Urban Heat Island', 'Cartography'],
+  sameAs: ['https://github.com/zhangyx0803'],
+};
+---
+
+<Base
+  title="Zane Zhang · 地理信息科学"
+  description="Zane Zhang，地理信息科学。研究城市冷岛网络的跨期演变、遥感反演与专题制图；记录方法、踩坑与复现步骤。"
+  jsonLd={jsonLd}
+>
+  <section class="hero" data-nav="dark">
+    <div class="wrap">
+      <span class="hand">你好</span>
+      <h1>Zane Zhang</h1>
+      <p class="lede">
+        地理信息科学。最近在做上海市冷岛网络的跨期分析，也在整理一套游客点评的分析流程。
+      </p>
+      <p class="meta">
+        <b>31.1650°N&nbsp;&nbsp;121.4050°E</b> · 上海 · 徐汇 · <span id="weather">正在读取天气…</span>
+      </p>
+      <p class="cue"><i></i>继续向下</p>
+    </div>
+  </section>
+
+  <section class="section section--tight story" id="map" data-nav="light">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="mask"><span>先确定位置。</span></h2>
+        <p data-reveal>同一套投影，三个尺度。往下滚，画面会推近。</p>
+      </div>
+
+      <div class="story-grid">
+        <div class="stage" id="stage" aria-hidden="true">
+          <img id="world" src="/assets/world.svg" alt="" width="980" height="456" />
+          <span class="stage-note" id="stage-note">中国</span>
+        </div>
+
+        <div class="steps" id="steps">
+          <div class="step is-on" data-i="0">
+            <div class="n">01</div>
+            <h3>中国</h3>
+            <p>上海在长江入海口。季风、平原、密集的人口，决定了它夏天的热不是偶然。</p>
+          </div>
+          <div class="step" data-i="1">
+            <div class="n">02</div>
+            <h3>长江三角洲</h3>
+            <p>水域与建成区交替出现。冷源不是孤岛，它们被水系和绿带连起来。</p>
+          </div>
+          <div class="step" data-i="2">
+            <div class="n">03</div>
+            <h3>徐汇</h3>
+            <p>31.1650°N、121.4050°E。我的大部分数据从这里开始。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark work" id="work" data-nav="dark">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="mask"><span>在做的两件事。</span></h2>
+        <p data-reveal>代码与项目说明公开；论文、图件与原始数据不公开，需要数据可以邮件索取。</p>
+      </div>
+
+      <div class="work-list">
+        {projects.map((p, i) => (
+          <article class="work-item" data-reveal style={`--d:${i * 70}ms`}>
+            <div>
+              <h3><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
+              <p class="meta-line">{p.data.period} · {p.data.status}</p>
+            </div>
+            <div>
+              <p>{p.data.summary}</p>
+              {p.data.methods.length > 0 && (
+                <p class="meta-line">{p.data.methods.join(' · ')}</p>
+              )}
+              <a class="more" href={`/projects/${p.id}/`}>数据与复现步骤 →</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section notes" id="notes" data-nav="light">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="mask"><span>最近的笔记。</span></h2>
+        <p data-reveal>方法、踩坑、复现细节。写下来是为了下次不用再踩一遍。</p>
+      </div>
+
+      <div class="note-list">
+        {notes.map((n, i) => (
+          <div class="note-row" data-reveal style={`--d:${i * 60}ms`}>
+            <time datetime={n.data.date.toISOString()}>
+              {n.data.date.getFullYear()}.{String(n.data.date.getMonth() + 1).padStart(2, '0')}.{String(n.data.date.getDate()).padStart(2, '0')}
+            </time>
+            <div>
+              <h3><a href={`/notes/${n.id}/`}>{n.data.title}</a></h3>
+              <p>{n.data.summary}</p>
+            </div>
+            <span class="arrow">→</span>
+          </div>
+        ))}
+      </div>
+
+      <p style="margin-top:28px" data-reveal>
+        <a href="/notes/">全部笔记 →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section log" id="log" data-nav="light">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="mask"><span>时间线。</span></h2>
+        <p data-reveal>做完一部分就记一条；没做完的挂在下面。</p>
+      </div>
+
+      <div class="entry" data-reveal>
+        <div class="when">2026.10.15</div>
+        <div>
+          <h3>乌镇双栅：数据与方法</h3>
+          <p class="what">先把能拿到的整理清楚，再决定分析什么。</p>
+          <ul>
+            <li class="done">景区经营数据 2016–2024 汇总</li>
+            <li class="done">方法学检索报告：两栅该怎么比</li>
+            <li class="done">13 个分析脚本：采集 → 清洗 → 主题 → 情感 → 建模</li>
+            <li class="todo">点评数据采集与论文</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="entry" data-reveal>
+        <div class="when">2026.10.20</div>
+        <div>
+          <h3>冷岛网络：开题</h3>
+          <p class="what">把问题、数据与方法一次定死，后面只管填数。</p>
+          <ul>
+            <li class="done">研究问题：十年怎么变、变化来自哪里</li>
+            <li class="done">数据清单：Landsat 8/9 三期、CLCD、行政边界</li>
+            <li class="done">11 步方法链与参数：MSPA / MCR / 电路 / 2×2 分解 / 熵权</li>
+            <li class="done">12 步操作手册，含实测报错与修正</li>
+            <li class="todo">影像入库与地表温度反演（进行中）</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="entry is-now" data-reveal>
+        <div class="when">现在</div>
+        <div>
+          <h3>冷岛网络：遥感反演</h3>
+          <p class="what">先把「冷源在哪」落成一张可靠的栅格，再谈网络。</p>
+          <ul>
+            <li class="todo">地表温度、NDVI、NDWI 三期反演</li>
+            <li class="todo">MSPA 核心区与源地识别</li>
+            <li class="todo">阻力面、廊道、瓶颈与归因</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact" data-nav="light">
+    <div class="wrap">
+      <h2 class="mask"><span>写信给我。</span></h2>
+      <a class="contact-big" href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>
+      <p class="meta-line" style="margin-top:22px">
+        <a href="https://github.com/zhangyx0803">GitHub</a> ·
+        <a href="https://www.openstreetmap.org/?mlat=31.1650&mlon=121.4050#map=15/31.1650/121.4050">31.1650°N 121.4050°E</a>
+      </p>
+    </div>
+  </section>
+
+  <style>
+    .story { padding-bottom: 40px; }
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .stage {
+      position: sticky;
+      top: 84px;
+      height: min(64vh, 600px);
+      overflow: hidden;
+      background: #fff;
+    }
+    .stage img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 980px; height: 456px;
+      transform-origin: 0 0;
+      will-change: transform;
+      transition: transform 1.5s var(--ease);
+    }
+    .stage.no-anim img { transition: none; }
+    .stage-note {
+      position: absolute;
+      left: 0; top: 0;
+      padding: 6px 12px 6px 0;
+      font-size: 13px;
+      color: var(--sub);
+      background: rgba(255,255,255,.92);
+    }
+    .steps .step {
+      min-height: 72vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .steps .step .n { font-size: 13px; color: #a1a1a6; }
+    .steps .step h3 {
+      margin: 12px 0 10px;
+      font-size: clamp(24px, 2.6vw, 32px);
+      letter-spacing: -0.03em;
+      font-weight: 600;
+      color: #b8b8bd;
+      transition: color .6s var(--ease);
+    }
+    .steps .step p { margin: 0; color: #a8a8ad; max-width: 30em; transition: color .6s var(--ease); }
+    .steps .step.is-on h3 { color: var(--ink); }
+    .steps .step.is-on p { color: var(--sub); }
+
+    @media (max-width: 900px) {
+      .story-grid { display: block; }
+      .stage { position: sticky; top: 52px; height: 46vh; margin: 0 0 10px; z-index: 5; }
+      .stage img { transition-duration: 1.15s; }
+      .steps .step { min-height: 62vh; padding-bottom: 20px; }
+      .steps .step .n { display: none; }
+    }
+
+    /* timeline */
+    .entry {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 32px;
+      padding: 30px 0;
+      border-top: 1px solid var(--line);
+    }
+    .entry:last-child { border-bottom: 1px solid var(--line); }
+    .entry .when { font-size: 15px; color: var(--sub); font-variant-numeric: tabular-nums; }
+    .entry.is-now .when { color: var(--ink); }
+    .entry.is-now .when::before {
+      content: ""; display: inline-block; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--green); margin-right: 9px; vertical-align: 2px;
+    }
+    .entry h3 { margin: 0 0 4px; font-size: 21px; letter-spacing: -0.02em; font-weight: 600; }
+    .entry .what { margin: 0 0 12px; color: var(--sub); }
+    .entry ul { list-style: none; margin: 0; padding: 0; font-size: 15.5px; color: var(--sub); }
+    .entry li { position: relative; padding-left: 20px; margin: 6px 0; }
+    .entry li::before { position: absolute; left: 0; top: 0; font-size: 13px; }
+    .entry li.done::before { content: "✓"; color: var(--green); }
+    .entry li.todo::before { content: "○"; color: #b0b0b5; }
+    .entry li.todo { color: #a1a1a6; }
+    @media (max-width: 720px) {
+      .entry { grid-template-columns: 1fr; gap: 6px; padding: 24px 0; }
+    }
+  </style>
+
+  <script>
+    const WMO = {
+      0: '晴', 1: '晴间多云', 2: '多云', 3: '阴', 45: '雾', 48: '雾凇',
+      51: '毛毛雨', 53: '小雨', 55: '中雨', 61: '小雨', 63: '中雨', 65: '大雨',
+      71: '小雪', 73: '中雪', 75: '大雪', 80: '阵雨', 81: '阵雨', 82: '强阵雨',
+      95: '雷阵雨', 96: '雷阵雨伴冰雹', 99: '强雷暴',
+    };
+
+    const wx = document.getElementById('weather');
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=31.165&longitude=121.405&current=temperature_2m,weather_code&timezone=Asia%2FShanghai')
+      .then((r) => r.json())
+      .then((d) => {
+        if (!wx) return;
+        wx.textContent = `实时 ${d.current.temperature_2m.toFixed(1)}°C · ${WMO[d.current.weather_code] ?? '—'}`;
+      })
+      .catch(() => { if (wx) wx.textContent = '天气暂不可用'; });
+
+    const world = document.getElementById('world');
+    const stage = document.getElementById('stage');
+    const note = document.getElementById('stage-note');
+    const steps = [...document.querySelectorAll('#steps .step')];
+
+    const PANELS = [
+      { x: 26, y: 54, w: 330, h: 340, label: '中国' },
+      { x: 372, y: 54, w: 258, h: 340, label: '长江三角洲' },
+      { x: 646, y: 54, w: 308, h: 340, label: '徐汇' },
+    ];
+    let current = 0;
+
+    function frame(i, animate) {
+      if (!world || !stage) return;
+      const p = PANELS[i];
+      const vw = stage.clientWidth;
+      const vh = stage.clientHeight;
+      if (!vw || !vh) return;
+      const scale = Math.max(vw / p.w, vh / p.h);
+      const cx = p.x + p.w / 2;
+      const cy = p.y + p.h / 2;
+      if (!animate) stage.classList.add('no-anim');
+      world.style.transform =
+        `translate(${(vw / 2 - cx * scale).toFixed(2)}px, ${(vh / 2 - cy * scale).toFixed(2)}px) scale(${scale.toFixed(4)})`;
+      if (!animate) requestAnimationFrame(() => stage.classList.remove('no-anim'));
+      current = i;
+      if (note) note.textContent = p.label;
+    }
+
+    if (steps.length && stage) {
+      const stepIO = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const i = Number(entry.target.dataset.i);
+            steps.forEach((s, k) => s.classList.toggle('is-on', k === i));
+            frame(i, true);
+          }
+        },
+        { rootMargin: '-45% 0px -45% 0px', threshold: 0 }
+      );
+      steps.forEach((s) => stepIO.observe(s));
+
+      frame(0, false);
+      let rz = 0;
+      window.addEventListener('resize', () => {
+        window.clearTimeout(rz);
+        rz = window.setTimeout(() => frame(current, false), 140);
+      });
+    }
+  </script>
+</Base>

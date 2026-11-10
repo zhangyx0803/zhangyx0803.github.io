@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /src/
+Disallow: /public/
+
+Sitemap: https://zhangyx0803.github.io/sitemap-index.xml
