@@ -131,29 +131,31 @@ const jsonLd = {
       <div class="wrap">
         <div class="section-head">
           <h2 class="mask"><span>成果。</span></h2>
-          <p data-reveal>软件著作权、论文与竞赛。登记号与登记日期一并在列。</p>
+          <p data-reveal>软件著作权、论文与竞赛。</p>
         </div>
-        {awards.map((a, i) => (
-          <article class="award" data-reveal style={`--d:${i * 60}ms`}>
-            <div class="kind">{a.data.kind}</div>
-            <div>
-              <h3>{a.data.title}</h3>
-              <p class="award-meta">
-                {a.data.number && <>登记号 {a.data.number}</>}
-                {a.data.number && (a.data.issued || a.data.holder) && ' · '}
-                {a.data.issued && <>{fmt(a.data.issued)} 登记</>}
-                {a.data.issued && a.data.holder && ' · '}
-                {a.data.holder}
-                {a.data.version && <> · {a.data.version}</>}
-              </p>
-              <p>{a.data.summary}</p>
-              <div class="links">
-                {a.data.related && <a href={`/projects/${a.data.related}/`}>关联项目 →</a>}
-                {a.data.link && <a href={a.data.link}>查看 →</a>}
+        {awards.map((a, i) => {
+          const meta = [
+            a.data.number && `登记号 ${a.data.number}`,
+            a.data.certificate,
+            a.data.issued && `${fmt(a.data.issued)} 登记`,
+            a.data.holder,
+            a.data.version,
+          ].filter(Boolean).join(' · ');
+          return (
+            <article class="award" data-reveal style={`--d:${i * 60}ms`}>
+              <div class="kind">{a.data.kind}</div>
+              <div>
+                <h3>{a.data.title}</h3>
+                <p class="award-meta">{meta}</p>
+                {a.data.summary && <p>{a.data.summary}</p>}
+                <div class="links">
+                  {a.data.related && <a href={`/projects/${a.data.related}/`}>关联项目 →</a>}
+                  {a.data.link && <a href={a.data.link}>查看 →</a>}
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </section>
   )}
