@@ -75,6 +75,15 @@ img, svg { max-width: 100%; }
 .site-header .brand {
   font-family: var(--serif); font-size: 15px; font-weight: 600;
   color: var(--navy); border-bottom: 0; letter-spacing: -0.01em;
+  opacity: 0;
+  transform: translate3d(0, -12px, 0);
+  pointer-events: none;
+  transition: opacity .5s var(--ease), transform .5s var(--ease), color .3s;
+}
+.site-header.brand-in .brand {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 .site-header .links { margin-left: auto; display: flex; align-items: center; gap: 26px; }
 .site-header nav a { color: var(--muted); border-bottom: 0; }

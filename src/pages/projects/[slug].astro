@@ -86,10 +86,10 @@ const jsonLd = {
                 </h3>
                 <p>
                   <span class="t-zh">
-                    {[a.data.number && `登记号 ${a.data.number}`, a.data.certificate, a.data.holder, a.data.version].filter(Boolean).join(' · ')}
+                    {[a.data.number && `登记号 ${a.data.number}`, a.data.certificate].filter(Boolean).join(' · ')}
                   </span>
                   <span class="t-en">
-                    {[a.data.number && `Reg. ${a.data.number}`, a.data.certificateEn ?? a.data.certificate, a.data.holderEn ?? a.data.holder, a.data.version].filter(Boolean).join(' · ')}
+                    {[a.data.number && `Reg. ${a.data.number}`, a.data.certificateEn ?? a.data.certificate].filter(Boolean).join(' · ')}
                   </span>
                 </p>
               </div>

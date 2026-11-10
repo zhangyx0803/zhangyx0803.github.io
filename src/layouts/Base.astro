@@ -174,8 +174,20 @@ const siteName = 'Zane Zhang';
       header?.classList.toggle('on-dark', dark);
       header?.classList.toggle('is-scrolled', window.scrollY > 8 && !dark);
     };
+    const heroTitle = document.querySelector('.hero h1');
+    const heroBlock = document.querySelector('.hero');
+    const syncHero = () => {
+      header?.classList.toggle('brand-in', window.scrollY > 72);
+      if (!heroTitle || !heroBlock || reduce) return;
+      const h = heroBlock.offsetHeight || 1;
+      const p = Math.min(window.scrollY / (h * 0.8), 1);
+      heroTitle.style.transform = `translate3d(0, ${(-p * 46).toFixed(1)}px, 0)`;
+      heroTitle.style.opacity = String(Math.max(0, 1 - Math.max(0, p - 0.5) * 2));
+    };
+    window.addEventListener('scroll', syncHero, { passive: true });
     window.addEventListener('scroll', syncHeader, { passive: true });
     syncHeader();
+    syncHero();
 
     const hand = document.querySelector('.hand');
     if (hand) requestAnimationFrame(() => hand.classList.add('is-written'));

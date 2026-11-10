@@ -4,6 +4,15 @@ import { getCollection } from 'astro:content';
 import { tracks } from '../data/log';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const today = new Date();
+for (const t of tracks) {
+  for (const e of t.entries) {
+    if (new Date(e.date) > today) {
+      throw new Error(`逐日进度里有未来日期：${e.date}（${e.title}）。请改成实际发生日期。`);
+    }
+  }
+}
+
 const awards = (await getCollection('achievements'))
   .filter((a) => !a.data.draft)
   .sort((a, b) => a.data.order - b.data.order);
@@ -85,14 +94,10 @@ const jsonLd = {
           const metaZh = [
             a.data.number && `登记号 ${a.data.number}`,
             a.data.certificate,
-            a.data.holder,
-            a.data.version,
           ].filter(Boolean).join(' · ');
           const metaEn = [
             a.data.number && `Reg. ${a.data.number}`,
             a.data.certificateEn ?? a.data.certificate,
-            a.data.holderEn ?? a.data.holder,
-            a.data.version,
           ].filter(Boolean).join(' · ');
           return (
             <article class="award" data-reveal style={`--d:${i * 60}ms`}>
