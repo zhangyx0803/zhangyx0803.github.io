@@ -1,14 +1,14 @@
 ---
-title: 乌镇东栅 / 西栅 游客情感对比
-titleEn: "Dongzha vs. Xizha - Sentiment on Both Sides of Wuzhen"
-subtitle: 大学生创新创业训练计划
+title: 乌镇东栅 / 西栅 旅游资源转换效率与游客情感
+titleEn: "Resource-Use Efficiency and Visitor Sentiment at Wuzhen's Two Gates"
+subtitle: 大学生创新创业训练计划 · 团队项目
 subtitleEn: Undergraduate Innovation and Entrepreneurship Program
-period: 2026.09 — 2026.11
-periodEn: 2026.09 — 2026.11
+period: 2026.04 — 2026.10
+periodEn: 2026.04 — 2026.10
 status: 已结题
 statusEn: Completed
-summary: 从公开点评出发，经主题分类与情感分析，看同一座古镇两道门的游客体验差异到底集中在哪些维度。
-summaryEn: Classifying and scoring public reviews to see where the visitor experience of Wuzhen's two gates actually differs.
+summary: 用 DEA-Malmquist 测两栅的旅游资源转换效率，再用点评数据看游客体验差异集中在哪些维度。
+summaryEn: DEA-Malmquist for resource-use efficiency, plus review-based sentiment to see where visitor experience actually differs.
 methods: [中文 NLP, 主题分类, 情感分析, 随机森林, SHAP, Mann-Whitney U, FDR]
 methodsEn: [Chinese NLP, topic classification, sentiment analysis, random forest, SHAP, Mann-Whitney U, FDR]
 repo: https://github.com/zhangyx0803/wuzhen-twin-gate-sentiment
@@ -17,15 +17,20 @@ order: 2
 
 ## 项目性质
 
-大学生创新创业训练计划项目，已结题。代码与复现步骤公开，数据按需提供。
+上海师范大学大学生创新创业训练计划（创新训练类）团队项目，已结题。
 
-## 在回答什么
+- 项目名称：活态保护与整体运营模式下历史文化古镇旅游资源转换效率比较研究——以浙江乌镇东栅、西栅为例
+- 负责人：杨玥；成员：贾永卓、张永轩、任晶晶；指导教师：褚玉静
+- 周期：2026.04 — 2026.10
 
-东栅偏原住民生活与观光，西栅偏度假与夜游；门票、业态、空间组织都不同。想用数据回答三件事：
+本人承担效率测算（DEA-Malmquist）与游客情感分析两部分，并据此登记软件著作权。代码与复现步骤公开，数据按需提供。
 
-1. 两栅游客的情感倾向是否有显著差异；
-2. 差异集中在哪些体验维度（餐饮、住宿、拥挤、夜景、服务、价格……）；
-3. 差异是否随季节与年份变化。
+## 研究内容
+
+东栅偏原住民生活与观光，西栅偏度假与夜游；门票、业态、空间组织都不同。项目分两部分：
+
+1. **资源转换效率**：用 DEA-Malmquist 测两栅 2016–2024 年的效率与全要素生产率变化，比较「活态保护」与「整体运营」两种模式的差异及成因。
+2. **游客体验**：从公开点评出发，检验两栅情感倾向是否有显著差异、差异集中在哪些体验维度（餐饮、住宿、拥挤、夜景、服务、价格），以及是否随季节与年份变化。
 
 ## 数据
 
