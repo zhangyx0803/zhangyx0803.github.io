@@ -17,7 +17,7 @@ interface Track {
   status: string;
   statusEn: string;
   entries: LogEntry[];
-  plan: { when: string; what: string; whatEn: string }[];
+  plan: { when: string; whenEn: string; what: string; whatEn: string }[];
 }
 
 /**
@@ -52,10 +52,10 @@ export const tracks: Track[] = [
       },
     ],
     plan: [
-      { when: '影像', what: '三期影像与土地覆被入库、地表温度与指数反演', whatEn: 'Imagery and land cover ingested; LST and indices retrieved' },
-      { when: '源地', what: 'MSPA 核心区与源地识别，构建三套阻力面', whatEn: 'MSPA cores and sources, three resistance surfaces' },
-      { when: '网络', what: 'MCR 廊道、高阻力段与电路夹点', whatEn: 'MCR corridors, high-resistance segments, pinch points' },
-      { when: '归因', what: '2×2 析因分解与熵权排序，出图件', whatEn: '2×2 decomposition, ranking, figures' },
+      { when: '影像', whenEn: 'Imagery', what: '三期影像与土地覆被入库、地表温度与指数反演', whatEn: 'Imagery and land cover ingested; LST and indices retrieved' },
+      { when: '源地', whenEn: 'Sources', what: 'MSPA 核心区与源地识别，构建三套阻力面', whatEn: 'MSPA cores and sources, three resistance surfaces' },
+      { when: '网络', whenEn: 'Network', what: 'MCR 廊道、高阻力段与电路夹点', whatEn: 'MCR corridors, high-resistance segments, pinch points' },
+      { when: '归因', whenEn: 'Attribution', what: '2×2 析因分解与熵权排序，出图件', whatEn: '2×2 decomposition, ranking, figures' },
     ],
   },
   {
