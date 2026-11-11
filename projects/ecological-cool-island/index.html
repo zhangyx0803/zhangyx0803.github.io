@@ -1,0 +1,226 @@
+<!DOCTYPE html><html lang="zh-CN" data-lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+    try {
+      var saved = localStorage.getItem('lang');
+      if (saved === 'en' || saved === 'zh') document.documentElement.dataset.lang = saved;
+    } catch (e) {}
+  </script><title>生态冷岛网络 · Zane Zhang</title><meta name="description" content="把湿地、鸟类分布、夜间灯光与道路并入同一套 30 m 网格，构建冷岛—生态复合网络，找同时承担降温与踏脚石功能的节点，以及廊道与建设用地的冲突区。"><link rel="canonical" href="https://zhangyx0803.github.io/projects/ecological-cool-island/"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta name="author" content="Zane Zhang"><meta name="theme-color" content="#faf8f5"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="sitemap" type="application/xml" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="Zane Zhang"><meta property="og:title" content="生态冷岛网络 · Zane Zhang"><meta property="og:description" content="把湿地、鸟类分布、夜间灯光与道路并入同一套 30 m 网格，构建冷岛—生态复合网络，找同时承担降温与踏脚石功能的节点，以及廊道与建设用地的冲突区。"><meta property="og:url" content="https://zhangyx0803.github.io/projects/ecological-cool-island/"><meta property="og:image" content="https://zhangyx0803.github.io/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="zh_CN"><meta property="og:locale:alternate" content="en_US"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="生态冷岛网络 · Zane Zhang"><meta name="twitter:description" content="把湿地、鸟类分布、夜间灯光与道路并入同一套 30 m 网格，构建冷岛—生态复合网络，找同时承担降温与踏脚石功能的节点，以及廊道与建设用地的冲突区。"><meta name="twitter:image" content="https://zhangyx0803.github.io/og.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"CreativeWork","name":"生态冷岛网络","alternateName":"Ecological Cool-Island Network","description":"把湿地、鸟类分布、夜间灯光与道路并入同一套 30 m 网格，构建冷岛—生态复合网络，找同时承担降温与踏脚石功能的节点，以及廊道与建设用地的冲突区。","author":{"@type":"Person","name":"Zane Zhang","url":"https://zhangyx0803.github.io/"},"keywords":"MaxEnt, 电路理论, 最小生成树, 湿地踏脚石, 夜间灯光, Pareto 多目标","codeRepository":"https://github.com/zhangyx0803/ecological-cool-island-network"}</script><link rel="stylesheet" href="/_astro/Base.Cma4S5B_.css"><link rel="stylesheet" href="/_astro/_slug_.CE0G_ZWW.css"></head><body><a class="skip" href="#main"><span class="t-zh">跳到正文</span><span class="t-en">Skip to content</span></a><header class="site-header"><nav class="wrap"><a class="brand" href="/">Zane Zhang</a><div class="links"><a href="/projects/"><span class="t-zh">研究</span><span class="t-en">Research</span></a><a href="/cv/"><span class="t-zh">简历</span><span class="t-en">CV</span></a><a href="/#contact"><span class="t-zh">联系</span><span class="t-en">Contact</span></a></div><div class="lang-switch" role="group" aria-label="Language"><button type="button" data-lang-btn="zh" aria-pressed="true">中</button><span aria-hidden="true">/</span><button type="button" data-lang-btn="en" aria-pressed="false">EN</button></div></nav></header><main id="main"><article class="article" data-nav="light" data-astro-cid-yq2gsstb><div class="wrap" data-astro-cid-yq2gsstb><h1 data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>生态冷岛网络</span><span class="t-en" data-astro-cid-yq2gsstb>Ecological Cool-Island Network</span></h1><p class="subtitle t-zh" data-astro-cid-yq2gsstb>在冷岛网络基础上延伸 · 湿地与鸟类</p><p class="subtitle t-en" data-astro-cid-yq2gsstb>Extending the cool-island work to wetlands and birds</p><dl class="facts" data-astro-cid-yq2gsstb><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>时间</span><span class="t-en" data-astro-cid-yq2gsstb>Period</span></dt><dd data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>2026.11 — 至今</span><span class="t-en" data-astro-cid-yq2gsstb>2026.11 — present</span></dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>状态</span><span class="t-en" data-astro-cid-yq2gsstb>Status</span></dt><dd data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>进行中</span><span class="t-en" data-astro-cid-yq2gsstb>In progress</span></dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>方法</span><span class="t-en" data-astro-cid-yq2gsstb>Methods</span></dt><dd data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>MaxEnt · 电路理论 · 最小生成树 · 湿地踏脚石 · 夜间灯光 · Pareto 多目标</span><span class="t-en" data-astro-cid-yq2gsstb>MaxEnt · circuit theory · minimum spanning tree · wetland stepping stones · night-time lights · Pareto</span></dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>代码</span><span class="t-en" data-astro-cid-yq2gsstb>Code</span></dt><dd data-astro-cid-yq2gsstb><a href="https://github.com/zhangyx0803/ecological-cool-island-network" data-astro-cid-yq2gsstb>GitHub</a></dd></div></dl><div class="prose t-zh" data-astro-cid-yq2gsstb><h2 id="在做什么">在做什么</h2>
+<p>冷岛网络回答的是「冷源在哪、廊道怎么走」，但一条降温廊道未必是生物能走的通道。
+本项目在冷岛网络的基础上，把湿地、鸟类分布、夜间灯光与道路并入同一套网格，问三个问题：</p>
+<ol>
+<li>哪些冷源同时承担鸟类踏脚石功能；</li>
+<li>复合阻力面下，廊道网络如何变化；</li>
+<li>廊道与建设用地、道路的冲突区在哪，优先修复哪一段。</li>
+</ol>
+<h2 id="数据">数据</h2>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Landsat 8/9 三期（LST / NDVI / NDWI）</td>
+<td>冷源与热环境，同冷岛网络</td>
+</tr>
+<tr>
+<td>CLCD 30 m 土地覆被</td>
+<td>阻力面与建成区</td>
+</tr>
+<tr>
+<td>多期湿地分布</td>
+<td>斑块识别、持久性与踏脚石</td>
+</tr>
+<tr>
+<td>eBird 观鸟记录</td>
+<td>鸟类分布，含努力量校正</td>
+</tr>
+<tr>
+<td>夜间灯光（VNL，500 m 聚合）</td>
+<td>人类活动强度</td>
+</tr>
+<tr>
+<td>道路与保护区边界</td>
+<td>阻力与冲突判定</td>
+</tr>
+</tbody>
+</table>
+<p>统一到 EPSG:4549、30 m 的 <code>RefGrid_30m.tif</code>；500 m 数据先聚合再重采样，不做双线性拉伸。</p>
+<blockquote>
+<p><strong>原始数据不随仓库分发。</strong> 需要复现请将用途说明发至 <a href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>。</p>
+</blockquote>
+<h2 id="方法">方法</h2>
+<ul>
+<li><strong>湿地</strong>：斑块识别、跨期持久性、踏脚石筛选；</li>
+<li><strong>鸟类分布</strong>：eBird 努力量校正后用 MaxEnt 建模，输出适宜性面；</li>
+<li><strong>阻力面</strong>：冷岛阻力与生态阻力合成，分「降温优先」「连通优先」两套；</li>
+<li><strong>网络</strong>：最小生成树廊道、节点组成、瓶颈段；</li>
+<li><strong>冲突</strong>：廊道与建设用地、道路的叠加区；</li>
+<li><strong>多目标</strong>：降温收益与连通性收益的 Pareto 前沿。</li>
+</ul>
+<h2 id="脚本">脚本</h2>
+<p><code>scripts/</code> 下 44 个 ArcPy / Python 脚本，按前缀分组：</p>
+<table>
+<thead>
+<tr>
+<th>前缀</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stage_</code></td>
+<td>基础网格、因子图层、阶段产物</td>
+</tr>
+<tr>
+<td><code>wetland_</code></td>
+<td>湿地斑块、持久性、踏脚石</td>
+</tr>
+<tr>
+<td><code>ebird_</code></td>
+<td>观鸟记录清洗、努力量校正、热点与季节格局</td>
+</tr>
+<tr>
+<td><code>maxent_</code></td>
+<td>分布模型预处理、训练、贡献度</td>
+</tr>
+<tr>
+<td><code>suit_</code> / <code>integrate_</code></td>
+<td>适宜性合成与集成</td>
+</tr>
+<tr>
+<td><code>mst_</code> / <code>corridor_</code></td>
+<td>最小生成树网络、廊道评价、瓶颈</td>
+</tr>
+<tr>
+<td><code>conflict_</code> / <code>district_</code></td>
+<td>冲突点、冲突适宜性、分区</td>
+</tr>
+<tr>
+<td><code>pareto_</code></td>
+<td>多目标前沿</td>
+</tr>
+<tr>
+<td><code>vnl_</code></td>
+<td>夜间灯光聚合与分期</td>
+</tr>
+</tbody>
+</table>
+<p>脚本头部改了相对路径占位（<code>data/</code>、<code>outputs/</code>），运行时指回自己的数据根目录即可。</p>
+<h2 id="进度">进度</h2>
+<ul>
+<li>已完成：工程与数据约定、统一网格与因子图层（<code>stage_ab</code>、<code>stage_cd</code>）。</li>
+<li>进行中：湿地斑块与鸟类分布、网络构建。</li>
+</ul>
+</div><div class="prose t-en" data-astro-cid-yq2gsstb><h2 id="question">Question</h2>
+<p>The cool-island work answers where cold sources are and how corridors run, but a cooling corridor is not
+necessarily a corridor animals can use. Building on that work, this project merges wetlands, bird records,
+night-time lights and roads onto one grid and asks:</p>
+<ol>
+<li>which cold sources also serve as stepping stones for birds;</li>
+<li>how the corridor network changes under a combined resistance surface;</li>
+<li>where corridors collide with built-up land and roads, and which segment to restore first.</li>
+</ol>
+<h2 id="data">Data</h2>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Landsat 8/9, three periods (LST / NDVI / NDWI)</td>
+<td>cold sources and thermal context</td>
+</tr>
+<tr>
+<td>CLCD 30 m land cover</td>
+<td>resistance and built-up extent</td>
+</tr>
+<tr>
+<td>Multi-period wetland maps</td>
+<td>patch delineation, persistence, stepping stones</td>
+</tr>
+<tr>
+<td>eBird records</td>
+<td>bird distribution, effort-corrected</td>
+</tr>
+<tr>
+<td>Night-time lights (VNL, aggregated from 500 m)</td>
+<td>human activity</td>
+</tr>
+<tr>
+<td>Roads and protected-area boundaries</td>
+<td>resistance and conflict</td>
+</tr>
+</tbody>
+</table>
+<p>All layers are aligned to <code>RefGrid_30m.tif</code> at EPSG:4549, 30 m. 500 m data are aggregated before resampling;
+no bilinear stretching.</p>
+<blockquote>
+<p><strong>Raw data are not distributed.</strong> For reproduction, write to <a href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>.</p>
+</blockquote>
+<h2 id="method">Method</h2>
+<ul>
+<li><strong>Wetlands</strong> — patch delineation, cross-period persistence, stepping-stone screening.</li>
+<li><strong>Bird distribution</strong> — eBird effort correction, then MaxEnt for a suitability surface.</li>
+<li><strong>Resistance</strong> — cooling resistance combined with ecological resistance, in two variants: cooling-first and connectivity-first.</li>
+<li><strong>Network</strong> — minimum spanning tree corridors, node composition, bottleneck segments.</li>
+<li><strong>Conflict</strong> — corridor overlay on built-up land and roads.</li>
+<li><strong>Multi-objective</strong> — Pareto front of cooling gain against connectivity gain.</li>
+</ul>
+<h2 id="scripts">Scripts</h2>
+<p>44 ArcPy / Python scripts under <code>scripts/</code>, grouped by prefix:</p>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stage_</code></td>
+<td>base grid, factor layers, staged products</td>
+</tr>
+<tr>
+<td><code>wetland_</code></td>
+<td>wetland patches, persistence, stepping stones</td>
+</tr>
+<tr>
+<td><code>ebird_</code></td>
+<td>record cleaning, effort correction, hotspots and seasonality</td>
+</tr>
+<tr>
+<td><code>maxent_</code></td>
+<td>distribution model preparation, training, variable contribution</td>
+</tr>
+<tr>
+<td><code>suit_</code> / <code>integrate_</code></td>
+<td>suitability composition</td>
+</tr>
+<tr>
+<td><code>mst_</code> / <code>corridor_</code></td>
+<td>minimum spanning tree, corridor evaluation, bottlenecks</td>
+</tr>
+<tr>
+<td><code>conflict_</code> / <code>district_</code></td>
+<td>conflict points, conflict suitability, zoning</td>
+</tr>
+<tr>
+<td><code>pareto_</code></td>
+<td>multi-objective front</td>
+</tr>
+<tr>
+<td><code>vnl_</code></td>
+<td>night-time light aggregation and staging</td>
+</tr>
+</tbody>
+</table>
+<p>Paths at the top of each script were rewritten to <code>data/</code> and <code>outputs/</code> placeholders before publication.</p>
+<h2 id="status">Status</h2>
+<p>Completed: workspace and data conventions, common grid and factor layers (<code>stage_ab</code>, <code>stage_cd</code>).
+Ongoing: wetland patches, bird distribution, network construction.</p>
+</div><section class="timeline" data-astro-cid-yq2gsstb><h2 data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>进度</span><span class="t-en" data-astro-cid-yq2gsstb>Progress</span></h2><div class="tl-row" data-astro-cid-yq2gsstb><time datetime="2026-11-03" data-astro-cid-yq2gsstb>2026.11.03</time><div data-astro-cid-yq2gsstb><h3 data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>工作空间与数据约定</span><span class="t-en" data-astro-cid-yq2gsstb>Workspace and data conventions</span></h3><ul class="t-zh" data-astro-cid-yq2gsstb><li data-astro-cid-yq2gsstb>工程、中间产物、成果分目录存放</li><li data-astro-cid-yq2gsstb>统一 30 m / EPSG:4549 基准网格，500 m 数据先聚合再重采样</li></ul><ul class="t-en" data-astro-cid-yq2gsstb><li data-astro-cid-yq2gsstb>Project, intermediates and outputs kept in separate folders</li><li data-astro-cid-yq2gsstb>Common 30 m / EPSG:4549 reference grid; 500 m data aggregated before resampling</li></ul></div></div><div class="tl-plan" data-astro-cid-yq2gsstb><span class="lbl" data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>后续</span><span class="t-en" data-astro-cid-yq2gsstb>Next</span></span><div data-astro-cid-yq2gsstb><span class="item" data-astro-cid-yq2gsstb><b class="t-zh" data-astro-cid-yq2gsstb>湿地</b><b class="t-en" data-astro-cid-yq2gsstb>Wetlands</b><span class="t-zh" data-astro-cid-yq2gsstb>斑块识别、跨期持久性、踏脚石筛选</span><span class="t-en" data-astro-cid-yq2gsstb>Patch delineation, persistence, stepping-stone screening</span></span><span class="item" data-astro-cid-yq2gsstb><b class="t-zh" data-astro-cid-yq2gsstb>鸟类</b><b class="t-en" data-astro-cid-yq2gsstb>Birds</b><span class="t-zh" data-astro-cid-yq2gsstb>eBird 努力量校正与 MaxEnt 分布建模</span><span class="t-en" data-astro-cid-yq2gsstb>eBird effort correction and MaxEnt distribution models</span></span><span class="item" data-astro-cid-yq2gsstb><b class="t-zh" data-astro-cid-yq2gsstb>网络</b><b class="t-en" data-astro-cid-yq2gsstb>Network</b><span class="t-zh" data-astro-cid-yq2gsstb>复合阻力面、MST 廊道与瓶颈</span><span class="t-en" data-astro-cid-yq2gsstb>Combined resistance surface, MST corridors and bottlenecks</span></span><span class="item" data-astro-cid-yq2gsstb><b class="t-zh" data-astro-cid-yq2gsstb>冲突</b><b class="t-en" data-astro-cid-yq2gsstb>Conflict</b><span class="t-zh" data-astro-cid-yq2gsstb>廊道与建设用地、道路的冲突区与 Pareto 前沿</span><span class="t-en" data-astro-cid-yq2gsstb>Corridor conflicts with built-up land and roads, Pareto front</span></span></div></div></section><nav class="article-foot" data-astro-cid-yq2gsstb><a href="/projects/" data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>← 返回研究</span><span class="t-en" data-astro-cid-yq2gsstb>← All research</span></a><a href="/#contact" data-astro-cid-yq2gsstb><span class="t-zh" data-astro-cid-yq2gsstb>需要数据？写信给我 →</span><span class="t-en" data-astro-cid-yq2gsstb>Need the data? Write to me →</span></a></nav></div></article></main><footer class="site-footer"><div class="wrap"><span>© <span id="year">2026</span> Zane Zhang</span><span><span class="t-zh">更新于 2026.11</span><span class="t-en">Last updated 2026.11</span></span></div></footer><script type="module">var e=document.documentElement,t=t=>{e.dataset.lang=t,e.lang=t===`zh`?`zh-CN`:`en`;try{localStorage.setItem(`lang`,t)}catch{}document.querySelectorAll(`[data-lang-btn]`).forEach(e=>{e.setAttribute(`aria-pressed`,String(e.dataset.langBtn===t))})};document.querySelectorAll(`[data-lang-btn]`).forEach(e=>{e.addEventListener(`click`,()=>t(e.dataset.langBtn))}),t(e.dataset.lang===`en`?`en`:`zh`);var n=document.getElementById(`year`);if(n&&(n.textContent=String(new Date().getFullYear())),window.matchMedia(`(prefers-reduced-motion: reduce)`).matches)document.querySelectorAll(`[data-reveal]`).forEach(e=>e.classList.add(`is-in`));else{let e=new IntersectionObserver(t=>{for(let n of t)n.isIntersecting&&(n.target.classList.add(`is-in`),e.unobserve(n.target))},{threshold:.08,rootMargin:`0px 0px -6% 0px`});document.querySelectorAll(`[data-reveal]`).forEach(t=>e.observe(t))}</script></body></html>

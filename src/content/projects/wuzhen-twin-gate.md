@@ -12,7 +12,7 @@ summaryEn: DEA-Malmquist for resource-use efficiency, plus review-based sentimen
 methods: [中文 NLP, 主题分类, 情感分析, 随机森林, SHAP, Mann-Whitney U, FDR]
 methodsEn: [Chinese NLP, topic classification, sentiment analysis, random forest, SHAP, Mann-Whitney U, FDR]
 repo: https://github.com/zhangyx0803/wuzhen-twin-gate-sentiment
-order: 2
+order: 3
 ---
 
 ## 项目性质

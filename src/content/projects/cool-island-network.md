@@ -3,10 +3,10 @@ title: 上海市冷岛网络演变
 titleEn: Evolution of Shanghai's Cool-Island Network
 subtitle: 2015 — 2025 · 跨期归因
 subtitleEn: 2015 — 2025 · Attribution across periods
-period: 2026.10 — 至今
-periodEn: 2026.10 — present
-status: 进行中
-statusEn: In progress
+period: 2026.10 — 2026.11
+periodEn: 2026.10 — 2026.11
+status: 已结束
+statusEn: Completed
 summary: 三期遥感影像识别冷源与源地，构建冷岛廊道网络；再用 2×2 析因分解判断变化来自源地格局还是阻力面。
 summaryEn: Three periods of satellite imagery locate cold sources and patches; the resulting corridor network is then decomposed to tell whether change came from source pattern or resistance surface.
 methods: [MSPA, MCR, 电路理论, 2×2 析因分解, 熵权法, ArcGIS Pro]

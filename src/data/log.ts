@@ -29,8 +29,8 @@ export const tracks: Track[] = [
     id: 'cool-island-network',
     title: '上海市冷岛网络',
     titleEn: 'Shanghai cool-island network',
-    status: '进行中',
-    statusEn: 'in progress',
+    status: '已结束',
+    statusEn: 'completed',
     entries: [
       {
         date: '2026-10-04',
@@ -86,4 +86,35 @@ export const tracks: Track[] = [
     ],
     plan: [],
   },
+  {
+    id: 'ecological-cool-island',
+    title: '生态冷岛网络',
+    titleEn: 'Ecological cool-island network',
+    status: '进行中',
+    statusEn: 'in progress',
+    entries: [
+      {
+        date: '2026-11-03',
+        title: '工作空间与数据约定',
+        titleEn: 'Workspace and data conventions',
+        done: [
+          '工程、中间产物、成果分目录存放',
+          '统一 30 m / EPSG:4549 基准网格，500 m 数据先聚合再重采样',
+        ],
+        doneEn: [
+          'Project, intermediates and outputs kept in separate folders',
+          'Common 30 m / EPSG:4549 reference grid; 500 m data aggregated before resampling',
+        ],
+        status: '完成',
+        statusEn: 'done',
+      },
+    ],
+    plan: [
+      { when: '湿地', whenEn: 'Wetlands', what: '斑块识别、跨期持久性、踏脚石筛选', whatEn: 'Patch delineation, persistence, stepping-stone screening' },
+      { when: '鸟类', whenEn: 'Birds', what: 'eBird 努力量校正与 MaxEnt 分布建模', whatEn: 'eBird effort correction and MaxEnt distribution models' },
+      { when: '网络', whenEn: 'Network', what: '复合阻力面、MST 廊道与瓶颈', whatEn: 'Combined resistance surface, MST corridors and bottlenecks' },
+      { when: '冲突', whenEn: 'Conflict', what: '廊道与建设用地、道路的冲突区与 Pareto 前沿', whatEn: 'Corridor conflicts with built-up land and roads, Pareto front' },
+    ],
+  },
 ];
+
