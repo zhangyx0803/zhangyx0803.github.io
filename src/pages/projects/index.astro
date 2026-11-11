@@ -27,7 +27,8 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
               </h3>
               <p class="meta-line">
                 <span class="t-zh">{p.data.status}</span><span class="t-en">{p.data.statusEn ?? p.data.status}</span>
-                {p.data.methods.length ? ` · ${p.data.methods.join(' · ')}` : ''}
+                {p.data.methods.length > 0 && <span class="t-zh"> · {p.data.methods.join(' · ')}</span>}
+                {p.data.methodsEn.length > 0 && <span class="t-en"> · {p.data.methodsEn.join(' · ')}</span>}
               </p>
               <p class="t-zh">{p.data.summary}</p>
               <p class="t-en">{p.data.summaryEn ?? p.data.summary}</p>

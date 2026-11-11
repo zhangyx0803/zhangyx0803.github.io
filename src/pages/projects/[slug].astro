@@ -14,7 +14,7 @@ const { Content } = await render(entry);
 const enEntry = (await getCollection('projectsEn')).find((e) => e.id === entry.id);
 const EnContent = enEntry ? (await render(enEntry)).Content : null;
 
-const { title, titleEn, subtitle, subtitleEn, period, status, statusEn, summary, methods, repo } = entry.data;
+const { title, titleEn, subtitle, subtitleEn, period, periodEn, status, statusEn, summary, methods, methodsEn, repo } = entry.data;
 
 const track = tracks.find((t) => t.id === entry.id);
 
@@ -50,7 +50,9 @@ const jsonLd = {
       <dl class="facts">
         <div>
           <dt><span class="t-zh">时间</span><span class="t-en">Period</span></dt>
-          <dd>{period}</dd>
+          <dd>
+            <span class="t-zh">{period}</span><span class="t-en">{periodEn ?? period}</span>
+          </dd>
         </div>
         <div>
           <dt><span class="t-zh">状态</span><span class="t-en">Status</span></dt>
@@ -61,7 +63,10 @@ const jsonLd = {
         {methods.length > 0 && (
           <div>
             <dt><span class="t-zh">方法</span><span class="t-en">Methods</span></dt>
-            <dd>{methods.join(' · ')}</dd>
+            <dd>
+              <span class="t-zh">{methods.join(' · ')}</span>
+              <span class="t-en">{(methodsEn.length ? methodsEn : methods).join(' · ')}</span>
+            </dd>
           </div>
         )}
         {repo && (

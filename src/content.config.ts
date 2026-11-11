@@ -7,11 +7,13 @@ const projectSchema = z.object({
   subtitle: z.string().optional(),
   subtitleEn: z.string().optional(),
   period: z.string(),
+  periodEn: z.string().optional(),
   status: z.string(),
   statusEn: z.string().optional(),
   summary: z.string(),
   summaryEn: z.string().optional(),
   methods: z.array(z.string()).default([]),
+  methodsEn: z.array(z.string()).default([]),
   repo: z.string().url().optional(),
   order: z.number().default(99),
 });

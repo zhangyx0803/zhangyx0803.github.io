@@ -36,8 +36,8 @@ const jsonLd = {
           Zane Zhang <span class="cn">张永轩</span>
         </h1>
         <p class="affil">
-          <span class="t-zh">上海师范大学 · 〔学院待补〕 · 地理信息科学 · 本科在读</span>
-          <span class="t-en">Shanghai Normal University · 〔college TBC〕 · Geographic Information Science · undergraduate</span>
+          <span class="t-zh">上海师范大学 · 环境与地理科学学院 · 地理信息科学 · 本科在读</span>
+          <span class="t-en">Shanghai Normal University · College of Environmental and Geographical Sciences · Geographic Information Science · undergraduate</span>
         </p>
         <p class="statement">
           <span class="t-zh">
@@ -67,11 +67,6 @@ const jsonLd = {
   <section class="section" id="research">
     <div class="wrap">
       <h2><span class="t-zh">研究</span><span class="t-en">Research</span></h2>
-      <p class="lede">
-        <span class="t-zh">两个项目，一个进行中，一个已结题。代码与复现步骤公开，原始数据按需提供。</span>
-        <span class="t-en">Two projects, one ongoing. Code and reproduction steps are public; raw data on request.</span>
-      </p>
-
       {projects.map((p, i) => (
         <div class="row" data-reveal>
           <div class="when">{p.data.period.split('—')[0].trim()}</div>
@@ -83,7 +78,12 @@ const jsonLd = {
             </h3>
             <p class="sub">
               <span class="t-zh">{p.data.status}</span><span class="t-en">{p.data.statusEn ?? p.data.status}</span>
-              {p.data.methods.length ? ` · ${p.data.methods.slice(0, 4).join(' · ')}` : ''}
+              {p.data.methods.length > 0 && (
+                <span class="t-zh"> · {p.data.methods.slice(0, 4).join(' · ')}</span>
+              )}
+              {p.data.methodsEn.length > 0 && (
+                <span class="t-en"> · {p.data.methodsEn.slice(0, 4).join(' · ')}</span>
+              )}
             </p>
             <p class="desc">
               <span class="t-zh">{p.data.summary}</span><span class="t-en">{p.data.summaryEn ?? p.data.summary}</span>
@@ -104,11 +104,6 @@ const jsonLd = {
     <section class="section" id="output">
       <div class="wrap">
         <h2><span class="t-zh">成果</span><span class="t-en">Output</span></h2>
-        <p class="lede">
-          <span class="t-zh">软件著作权。登记号与证书号可在版权保护中心查询。</span>
-          <span class="t-en">Registered software copyright; the registration number is verifiable.</span>
-        </p>
-
         {awards.map((a, i) => (
           <div class="row" data-reveal>
             <div class="when">{a.data.issued ? String(a.data.issued.getFullYear()) : '2026'}</div>
@@ -142,6 +137,10 @@ const jsonLd = {
   <section class="contact" id="contact">
     <div class="wrap">
       <h2><span class="t-zh">联系</span><span class="t-en">Contact</span></h2>
+      <p class="cta">
+        <span class="t-zh">如需数据或合作，请联系：</span>
+        <span class="t-en">For data or collaboration, please write to:</span>
+      </p>
       <a class="mail" href="mailto:zhangyx0803@petalmail.com">zhangyx0803@petalmail.com</a>
       <p class="meta">
         <span class="t-zh">31.1650°N 121.4050°E · 上海 · 徐汇</span>
